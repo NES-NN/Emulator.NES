@@ -69,6 +69,11 @@ namespace dotNES
             return _rmwValue = ReadByte((uint)_currentMemoryAddress) & 0xFF;
         }
 
+        public uint AddressRead(uint a)
+        {
+            return _rmwValue = ReadByte(a) & 0xFF;
+        }
+
         public void AddressWrite(uint val)
         {
             if (_opcodeDefs[_currentInstruction].Mode == Direct) A = val;
