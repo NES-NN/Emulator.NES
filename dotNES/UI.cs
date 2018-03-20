@@ -253,6 +253,14 @@ namespace dotNES
                                 y.Click += delegate { activeSpeed = speed; };
                             }));
                     }),
+                    new Item("Game Info", x =>
+                    {
+                        x.Click += delegate
+                        {
+                            SuperMarioBros SuperMarioBros = new SuperMarioBros(ref emu);
+                            SuperMarioBros.Show();
+                        };
+                    }),
                     new Item("&Reset..."),
                 }
             };
