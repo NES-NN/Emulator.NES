@@ -13,7 +13,10 @@ namespace dotNES
     partial class SuperMarioBros : Form
     {
         private Emulator emu;
+        private static int refreshTime = 16;
+
         private int[] inputs = new int[256];
+        private int[,] enemy = new int[5,2];
 
         private Dictionary<int, String>
             playerState = new Dictionary<int, String>()
@@ -61,7 +64,7 @@ namespace dotNES
 
         public int[] Inputs
         {
-            get { updateMap(); return inputs; }
+            get { updateInputs(); return inputs; }
         }
 
         public Dictionary<String, int> GameStats
@@ -116,7 +119,7 @@ namespace dotNES
 
             int subx = (x % 256) / 16;
             int suby = (y - 32) / 16;
-            label1.Text = Convert.ToString(suby);
+
             uint addr = Convert.ToUInt32(0x500 + page * 13 * 16 + suby * 16 + subx);
 
             if (suby >= 13 || suby < 0)
@@ -128,17 +131,44 @@ namespace dotNES
                 return 0;
         }
 
-        private void updateMap()
+        private void updateInputs()
         {
-            int i = 0;
+            updateEnemies();
+            int i = 0, e = 0;
             for (int dy = -128; dy < 128; dy += 16)
                 for (int dx = -128; dx < 128; dx += 16)
                 {
+                    inputs[i] = 0;
+
                     if (getTile(dx, dy) == 1 && platerStats["y"] + dy < 0x1B0)
-                        inputs[i++] = 1;
-                    else
-                        inputs[i++] = 0;
+                        inputs[i] = 1;
+
+                    for (int j = e; j < 5; j++)
+                        if (enemy[j, 0] - (platerStats["x"] + dx) <= 8 && enemy[j, 1] - (platerStats["y"] + dy) <= 8 &&
+                            enemy[j, 0] != 0 && enemy[j, 1] != 0)
+                        {
+                            inputs[i] = -1;
+                            e++;
+                        }
+                    i++;
                 }
+        }
+
+        private void updateEnemies()
+        {
+            for (uint i = 0; i < 5; i++)
+            {
+                if ((Convert.ToBoolean(emu.CPU.AddressRead(0xF + i))))
+                {
+                    enemy[i, 0] = (int)(emu.CPU.AddressRead(0x6E + i) * 0x100 + emu.CPU.AddressRead(0x87 + i));
+                    enemy[i, 1] = (int)emu.CPU.AddressRead(0xCF + i) + 12;
+                }
+                else
+                {
+                    enemy[i, 0] = 0;
+                    enemy[i, 1] = 0;
+                }
+            }
         }
 
         private void refresh_Tick(object sender, EventArgs e)
@@ -172,7 +202,7 @@ namespace dotNES
             direction.Text = (platerStats["direction"] == 1) ? "Right" :
                              (platerStats["direction"] == 2) ? "Left" : "";
 
-            updateMap();
+            updateInputs();
 
             pictureBoxInputs.Image = new Bitmap(162,162);
             Graphics m = Graphics.FromImage(pictureBoxInputs.Image);
@@ -180,17 +210,21 @@ namespace dotNES
 
             m.DrawRectangle(gridPen, new Rectangle(0, 0, 161, 161));
 
+            m.FillRectangle(Brushes.Red, new Rectangle(80, 80, 10, 10));
+
             for (int i = 0; i < inputs.Length; i++)
             {
                 if (inputs[i] == 0)
                     m.DrawRectangle(gridPen, new Rectangle((i % 16) * 10, (i / 16) * 10, 10, 10));
+                if (inputs[i] == -1)
+                    m.FillRectangle(Brushes.Green, new Rectangle((i % 16) * 10, (i / 16) * 10, 10, 10));
             }
         }
 
         private void SuperMarioBros_Load(object sender, EventArgs e)
         {
             Timer timer = new Timer();
-            timer.Interval = (500);
+            timer.Interval = (refreshTime);
             timer.Tick += new EventHandler(refresh_Tick);
             timer.Start();
         }
