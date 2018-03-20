@@ -467,7 +467,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(567, 220);
+            this.ClientSize = new System.Drawing.Size(570, 223);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "SuperMarioBros";
             this.Text = "SuperMarioBros";
