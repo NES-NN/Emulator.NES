@@ -122,6 +122,7 @@ namespace dotNES
         private void BootCartridge(string rom)
         {
             emu = new Emulator(rom, _controller);
+
             _renderThread = new Thread(() =>
             {
                 gameStarted = true;
@@ -286,21 +287,25 @@ namespace dotNES
 
         private void LoadState()
         {
+            suspended = true;
             IController c = new NES001Controller();
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream("emu.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
             emu = (Emulator)formatter.Deserialize(stream);
             emu.Controller = c; this._controller = c;
             stream.Close();
+            suspended = false;
         }
 
 
         private void SaveState()
         {
+            suspended = true;
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream("emu.bin", FileMode.Create, FileAccess.Write, FileShare.None);
             formatter.Serialize(stream, emu);
             stream.Close();
+            suspended = false;
         }
 
 
