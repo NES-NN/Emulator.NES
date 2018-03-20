@@ -42,7 +42,7 @@
             this.labelScreenY = new System.Windows.Forms.Label();
             this.labelDirection = new System.Windows.Forms.Label();
             this.labelFloatState = new System.Windows.Forms.Label();
-            this.playerState = new System.Windows.Forms.Label();
+            this.state = new System.Windows.Forms.Label();
             this.powerUP = new System.Windows.Forms.Label();
             this.levelX = new System.Windows.Forms.Label();
             this.levelY = new System.Windows.Forms.Label();
@@ -132,7 +132,7 @@
             this.tableLayoutPanel2.Controls.Add(this.labelScreenY, 0, 5);
             this.tableLayoutPanel2.Controls.Add(this.labelDirection, 0, 6);
             this.tableLayoutPanel2.Controls.Add(this.labelFloatState, 0, 7);
-            this.tableLayoutPanel2.Controls.Add(this.playerState, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.state, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.powerUP, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.levelX, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.levelY, 1, 3);
@@ -234,14 +234,14 @@
             this.labelFloatState.TabIndex = 7;
             this.labelFloatState.Text = "Float State :";
             // 
-            // playerState
+            // state
             // 
-            this.playerState.AutoSize = true;
-            this.playerState.Location = new System.Drawing.Point(85, 0);
-            this.playerState.Name = "playerState";
-            this.playerState.Size = new System.Drawing.Size(60, 13);
-            this.playerState.TabIndex = 8;
-            this.playerState.Text = "playerState";
+            this.state.AutoSize = true;
+            this.state.Location = new System.Drawing.Point(85, 0);
+            this.state.Name = "state";
+            this.state.Size = new System.Drawing.Size(30, 13);
+            this.state.TabIndex = 8;
+            this.state.Text = "state";
             // 
             // powerUP
             // 
@@ -500,7 +500,7 @@
         private System.Windows.Forms.Label labelScreenY;
         private System.Windows.Forms.Label labelDirection;
         private System.Windows.Forms.Label labelFloatState;
-        private System.Windows.Forms.Label playerState;
+        private System.Windows.Forms.Label state;
         private System.Windows.Forms.Label powerUP;
         private System.Windows.Forms.Label levelX;
         private System.Windows.Forms.Label levelY;
