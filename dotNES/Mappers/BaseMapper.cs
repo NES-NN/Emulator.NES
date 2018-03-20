@@ -21,6 +21,7 @@ namespace dotNES.Mappers
         }
     }
 
+    [Serializable]
     abstract class BaseMapper
     {
         protected readonly Emulator _emulator;

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 namespace dotNES.Controllers
 {
+    [Serializable]
     class NES001Controller : IController
     {
         private int data;

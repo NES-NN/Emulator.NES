@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Windows.Forms;
 using dotNES.Controllers;
@@ -261,11 +264,45 @@ namespace dotNES
                             SuperMarioBros.Show();
                         };
                     }),
+                    new Item("Save State", x =>
+                    {
+                        x.Click += delegate
+                        {
+                            SaveState();
+                        };
+                    }),
+                    new Item("Load State", x =>
+                    {
+                        x.Click += delegate
+                        {
+                            LoadState();
+                        };
+                    }),
                     new Item("&Reset..."),
                 }
             };
             cm.Show(this, new Point(e.X, e.Y));
         }
+
+        private void LoadState()
+        {
+            IController c = new NES001Controller();
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream("emu.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+            emu = (Emulator)formatter.Deserialize(stream);
+            emu.Controller = c; this._controller = c;
+            stream.Close();
+        }
+
+
+        private void SaveState()
+        {
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream("emu.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+            formatter.Serialize(stream, emu);
+            stream.Close();
+        }
+
 
         private void UI_DragDrop(object sender, DragEventArgs e)
         {

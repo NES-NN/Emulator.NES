@@ -2,6 +2,7 @@
 
 namespace dotNES
 {
+    [Serializable]
     class Cartridge
     {
         public readonly byte[] Raw;

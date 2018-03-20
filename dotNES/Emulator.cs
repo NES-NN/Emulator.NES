@@ -8,6 +8,7 @@ using dotNES.Mappers;
 
 namespace dotNES
 {
+    [Serializable]
     class Emulator
     {
         private static readonly Dictionary<int, KeyValuePair<Type, MapperDef>> Mappers = (from type in Assembly.GetExecutingAssembly().GetTypes()

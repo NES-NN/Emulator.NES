@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace dotNES
 {
+    [Serializable]
     abstract class Addressable
     {
         public delegate uint ReadDelegate(uint addr);

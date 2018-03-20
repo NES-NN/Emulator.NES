@@ -1,5 +1,8 @@
-﻿namespace dotNES.Mappers
+﻿using System;
+
+namespace dotNES.Mappers
 {
+    [Serializable]
     [MapperDef(0)]
     class NROM : BaseMapper
     {
