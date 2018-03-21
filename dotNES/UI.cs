@@ -261,7 +261,7 @@ namespace dotNES
                     {
                         x.Click += delegate
                         {
-                            SuperMarioBros SuperMarioBros = new SuperMarioBros(ref emu);
+                            SuperMarioBros SuperMarioBros = new SuperMarioBros(ref emu, ref _controller);
                             SuperMarioBros.Show();
                         };
                     }),

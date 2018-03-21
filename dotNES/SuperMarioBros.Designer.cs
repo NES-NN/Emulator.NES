@@ -87,15 +87,15 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(549, 203);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(559, 203);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.pictureBoxInputs);
-            this.groupBox1.Location = new System.Drawing.Point(369, 3);
+            this.groupBox1.Location = new System.Drawing.Point(375, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(175, 192);
+            this.groupBox1.Size = new System.Drawing.Size(181, 198);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Inputs";
@@ -104,7 +104,7 @@
             // 
             this.pictureBoxInputs.Location = new System.Drawing.Point(7, 20);
             this.pictureBoxInputs.Name = "pictureBoxInputs";
-            this.pictureBoxInputs.Size = new System.Drawing.Size(162, 162);
+            this.pictureBoxInputs.Size = new System.Drawing.Size(169, 169);
             this.pictureBoxInputs.TabIndex = 0;
             this.pictureBoxInputs.TabStop = false;
             // 
@@ -309,7 +309,7 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.tableLayoutPanel3);
-            this.groupBox3.Location = new System.Drawing.Point(186, 3);
+            this.groupBox3.Location = new System.Drawing.Point(189, 3);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(176, 192);
             this.groupBox3.TabIndex = 2;
@@ -467,7 +467,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(570, 223);
+            this.ClientSize = new System.Drawing.Size(601, 223);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "SuperMarioBros";
             this.Text = "SuperMarioBros";

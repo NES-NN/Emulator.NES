@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dotNES.Controllers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,9 +14,14 @@ namespace dotNES
     partial class SuperMarioBros : Form
     {
         private Emulator emu;
+        private IController _controller;
         private static int refreshTime = 16;
 
-        private int[] inputs = new int[256];
+
+        private static int BoxRadius = 6;
+        private static int InputSize = (BoxRadius * 2 + 1) * (BoxRadius * 2 + 1);
+
+        private int[] inputs = new int[InputSize + 1];
         private int[,] enemy = new int[5,2];
 
         private Dictionary<int, String>
@@ -56,10 +62,11 @@ namespace dotNES
                 { "powerUP", 0 }, { "direction", 0 }
             };
 
-        public SuperMarioBros(ref Emulator e)
+        public SuperMarioBros(ref Emulator e, ref IController c)
         {
             InitializeComponent();
             emu = e;
+            _controller = c;
         }
 
         public int[] Inputs
@@ -135,8 +142,8 @@ namespace dotNES
         {
             updateEnemies();
             int i = 0, e = 0;
-            for (int dy = -128; dy < 128; dy += 16)
-                for (int dx = -128; dx < 128; dx += 16)
+            for (int dy = -BoxRadius * 16; dy <= BoxRadius * 16; dy += 16)
+                for (int dx = -BoxRadius * 16; dx <= BoxRadius * 16; dx += 16)
                 {
                     inputs[i] = 0;
 
@@ -204,20 +211,20 @@ namespace dotNES
 
             updateInputs();
 
-            pictureBoxInputs.Image = new Bitmap(162,162);
+            pictureBoxInputs.Image = new Bitmap(170, 170);
             Graphics m = Graphics.FromImage(pictureBoxInputs.Image);
             Pen gridPen = new Pen(Color.LightGray, 0.5F);
 
-            m.DrawRectangle(gridPen, new Rectangle(0, 0, 161, 161));
+            m.DrawRectangle(gridPen, new Rectangle(0, 0, 169, 169));
 
-            m.FillRectangle(Brushes.Red, new Rectangle(80, 80, 10, 10));
+            m.FillRectangle(Brushes.Red, new Rectangle(78, 78, 13, 13));
 
             for (int i = 0; i < inputs.Length; i++)
             {
                 if (inputs[i] == 0)
-                    m.DrawRectangle(gridPen, new Rectangle((i % 16) * 10, (i / 16) * 10, 10, 10));
+                    m.DrawRectangle(gridPen, new Rectangle((i % 13) * 13, (i / 13) * 13, 13, 13));
                 if (inputs[i] == -1)
-                    m.FillRectangle(Brushes.Green, new Rectangle((i % 16) * 10, (i / 16) * 10, 10, 10));
+                    m.FillRectangle(Brushes.Green, new Rectangle((i % 13) * 13, (i / 13) * 13, 13, 13));
             }
         }
 
