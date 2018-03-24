@@ -1,6 +1,6 @@
 ﻿namespace dotNES.Renderers
 {
-    public interface IRenderer
+    interface IRenderer
     {
        string RendererName { get; }
 

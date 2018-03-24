@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dotNES.Neat;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
@@ -12,8 +13,13 @@ namespace dotNES
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            UI ui = new UI();
-            Application.Run(ui);
+
+            SMBNeatUI neat = new SMBNeatUI();
+            Application.Run(neat);
+
+            //UI ui = new UI();
+            //Application.Run(ui);
+
             //Emulator emu = new Emulator();
             //Console.WriteLine(emu.Cartridge);
             //for (int i = 0; i < 10000; i++)

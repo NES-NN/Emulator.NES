@@ -14,7 +14,7 @@ using dotNES.Renderers;
 
 namespace dotNES
 {
-    public partial class UI : Form
+    partial class UI : Form
     {
         private bool _rendererRunning = true;
         private Thread _renderThread;
@@ -63,8 +63,8 @@ namespace dotNES
         private Emulator emu;
         private bool suspended;
         public bool gameStarted;
-
-        private Type[] possibleRenderers = { typeof(SoftwareRenderer), /* typeof(OpenGLRenderer),  */ typeof(Direct3DRenderer) };
+        
+        private Type[] possibleRenderers = { typeof(SoftwareRenderer) /*, typeof(OpenGLRenderer),  typeof(Direct3DRenderer)*/ };
         private List<IRenderer> availableRenderers = new List<IRenderer>();
 
         public UI()
@@ -73,6 +73,28 @@ namespace dotNES
 
             FindRenderers();
             SetRenderer(availableRenderers.Last());
+        }
+
+        public UI(string r)
+        {
+            InitializeComponent();
+
+            FindRenderers();
+            SetRenderer(availableRenderers.Last());
+
+            BootCartridge(r);
+        }
+
+        public UI(ref Emulator e, ref IController c)
+        {
+            InitializeComponent();
+
+            FindRenderers();
+            SetRenderer(availableRenderers.Last());
+
+            emu = e; _controller = c;
+
+            StartRenderThread();
         }
 
         private void SetRenderer(IRenderer renderer)
@@ -122,7 +144,11 @@ namespace dotNES
         private void BootCartridge(string rom)
         {
             emu = new Emulator(rom, _controller);
+            StartRenderThread();
+        }
 
+        private void StartRenderThread()
+        {
             _renderThread = new Thread(() =>
             {
                 gameStarted = true;
@@ -257,57 +283,11 @@ namespace dotNES
                                 y.Click += delegate { activeSpeed = speed; };
                             }));
                     }),
-                    new Item("Game Info", x =>
-                    {
-                        x.Click += delegate
-                        {
-                            SuperMarioBros SuperMarioBros = new SuperMarioBros(ref emu, ref _controller);
-                            SuperMarioBros.Show();
-                        };
-                    }),
-                    new Item("Save State", x =>
-                    {
-                        x.Click += delegate
-                        {
-                            SaveState();
-                        };
-                    }),
-                    new Item("Load State", x =>
-                    {
-                        x.Click += delegate
-                        {
-                            LoadState();
-                        };
-                    }),
                     new Item("&Reset..."),
                 }
             };
             cm.Show(this, new Point(e.X, e.Y));
         }
-
-        private void LoadState()
-        {
-            suspended = true;
-            IController c = new NES001Controller();
-            IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream("emu.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
-            emu = (Emulator)formatter.Deserialize(stream);
-            emu.Controller = c; this._controller = c;
-            stream.Close();
-            suspended = false;
-        }
-
-
-        private void SaveState()
-        {
-            suspended = true;
-            IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream("emu.bin", FileMode.Create, FileAccess.Write, FileShare.None);
-            formatter.Serialize(stream, emu);
-            stream.Close();
-            suspended = false;
-        }
-
 
         private void UI_DragDrop(object sender, DragEventArgs e)
         {
