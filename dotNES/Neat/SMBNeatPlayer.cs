@@ -35,7 +35,7 @@ namespace dotNES.Neat
             _brain.ResetState();
 
             // Convert the game state into an input array for the network
-            for (int i = 0; i < 256; i++)
+            for (int i = 0; i < _brain.InputCount; i++)
             {
                 _brain.InputSignalArray[i] = inputs[i];
             }
@@ -43,13 +43,31 @@ namespace dotNES.Neat
             // Activate the network
             _brain.Activate();
 
-            for (int i = 0; i < 8; i++)
-            {
-                Console.WriteLine(_brain.OutputSignalArray[i]);
-            }
+            // Execute button presses!
+            EvaluateOutputNode(_brain.OutputSignalArray[0], Keys.A);
+            EvaluateOutputNode(_brain.OutputSignalArray[1], Keys.S);
+            EvaluateOutputNode(_brain.OutputSignalArray[2], Keys.Up);
+            EvaluateOutputNode(_brain.OutputSignalArray[3], Keys.Down);
+            EvaluateOutputNode(_brain.OutputSignalArray[4], Keys.Left);
+            EvaluateOutputNode(_brain.OutputSignalArray[5], Keys.Right);
+        }
 
-            // TODO: Use output array to determine what buttons to press
-            _controller.PressKey_Manual(Keys.Right);
+        /// <summary>
+        /// Evaluates whether to press or release a particular key based on the output
+        /// from the NeuralNetwork.
+        /// </summary>
+        /// <param name="output"></param>
+        /// <param name="key"></param>
+        private void EvaluateOutputNode(double output, Keys key)
+        {
+            if (output > 0.5)
+            {
+                _controller.PressKey_Manual(key);
+            }
+            else
+            {
+                _controller.ReleaseKey_Manual(key);
+            }
         }
     }
 }
