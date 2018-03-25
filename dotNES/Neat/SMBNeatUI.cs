@@ -72,7 +72,6 @@ namespace dotNES.Neat
             if (_smbNeatInstances[_currentInstance] != null)
             {
                 _smbNeatInstances[_currentInstance].GameInstanceRunning = false;
-                //_gameThread?.Abort(); Need to fix this
             }
         }
 

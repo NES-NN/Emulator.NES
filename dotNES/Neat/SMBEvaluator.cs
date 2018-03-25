@@ -93,7 +93,7 @@ namespace dotNES.Neat
             neatPlayer.ReleaseAllKeys();
 
             // TODO: This throws an exception!
-            //_resetState();
+            _resetState();
 
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);

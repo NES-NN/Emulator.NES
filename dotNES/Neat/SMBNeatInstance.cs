@@ -16,7 +16,7 @@ namespace dotNES.Neat
     {
         private IController _controller;
         private SMB _smbState;
-        private Emulator _emulator;
+        private Emulator _emulator, _savedState;
         private UI _ui;
         private Thread _gameThread;
         private string _stateFileName = "emu.bin";
@@ -100,7 +100,7 @@ namespace dotNES.Neat
             _emulator = (Emulator)formatter.Deserialize(stream);
             _emulator.Controller = c; _controller = c;
             stream.Close();
-
+            _savedState = _emulator;
             StartGameThread(withUI);
         }
 
@@ -148,7 +148,14 @@ namespace dotNES.Neat
 
         IController GetController() { return _emulator.Controller; }
         SMB GetSMB() { return _smbState; }
-        void ResetState() { LoadState_Manual(false, _stateFileName); }
+        void ResetState()
+        {
+            IController c = new NES001Controller();
+            _suspended = true;
+            _emulator = _savedState;
+            _emulator.Controller = c; _controller = c;
+            _suspended = false;
+        }
 
         private NeatEvolutionAlgorithm<NeatGenome> _ea;
 
