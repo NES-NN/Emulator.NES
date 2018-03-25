@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace dotNES.Neat
 {
     class SMB
     {
-        private Emulator emu;
+        private Emulator _emulator;
 
         private static int BoxRadius = 6;
         private static int InputSize = (BoxRadius * 2 + 1) * (BoxRadius * 2 + 1);
 
         private int[] inputs = new int[InputSize + 1];
         private int[,] enemy = new int[5, 2];
+
+        private static int updateInterval = 16;
+        private Timer _timer;
 
         private Dictionary<String, int>
             gameStats = new Dictionary<String, int>()
@@ -29,39 +30,63 @@ namespace dotNES.Neat
                 { "powerUP", 0 }, { "direction", 0 }
             };
 
-        public SMB(ref Emulator e)
+        public SMB(ref Emulator emulator)
         {
-            emu = e;
+            _emulator = emulator;
         }
+
+        // --- Timer Management
+
+        public void Start()
+        {
+            _timer = new Timer(Update, null, updateInterval, updateInterval);
+        }
+
+        public void Stop()
+        {
+            _timer.Dispose();
+            _timer = null;
+        }
+
+        public void Update(Object stateInfo)
+        {
+            updateGameStats();
+            updatePlayerStats();
+            updateInputs();
+        }
+
+        // --- Getters
 
         public int[] Inputs
         {
-            get { updateInputs(); return inputs; }
+            get { return inputs; }
         }
 
         public Dictionary<String, int> GameStats
         {
-            get { updateGameStats(); return gameStats; }
+            get { return gameStats; }
         }
 
         public Dictionary<String, int> PlayerStats
         {
-            get { updatePlayerStats(); return playerStats; }
+            get { return playerStats; }
         }
+
+        // --- Updaters
 
         private void updatePlayerStats()
         {
-            playerStats["x"] = (int)(emu.CPU.AddressRead(0x6D) * 0x100 + emu.CPU.AddressRead(0x86));
-            playerStats["y"] = (int)(emu.CPU.AddressRead(0x03B8) + 16);
+            playerStats["x"] = (int)(_emulator.CPU.AddressRead(0x6D) * 0x100 + _emulator.CPU.AddressRead(0x86));
+            playerStats["y"] = (int)(_emulator.CPU.AddressRead(0x03B8) + 16);
 
-            playerStats["screenX"] = (int)emu.CPU.AddressRead(0x03AD);
-            playerStats["screenY"] = (int)emu.CPU.AddressRead(0x03B8);
+            playerStats["screenX"] = (int)_emulator.CPU.AddressRead(0x03AD);
+            playerStats["screenY"] = (int)_emulator.CPU.AddressRead(0x03B8);
 
-            playerStats["state"] = (int)emu.CPU.AddressRead(0x000E);
-            playerStats["floatState"] = (int)emu.CPU.AddressRead(0x001D);
+            playerStats["state"] = (int)_emulator.CPU.AddressRead(0x000E);
+            playerStats["floatState"] = (int)_emulator.CPU.AddressRead(0x001D);
 
-            playerStats["powerUP"] = (int)emu.CPU.AddressRead(0x0756);
-            playerStats["direction"] = (int)emu.CPU.AddressRead(0x0003);
+            playerStats["powerUP"] = (int)_emulator.CPU.AddressRead(0x0756);
+            playerStats["direction"] = (int)_emulator.CPU.AddressRead(0x0003);
         }
 
         private void updateGameStats()
@@ -69,10 +94,10 @@ namespace dotNES.Neat
             gameStats["score"] = bcdToInt(0x07DE, 5);
             gameStats["time"] = bcdToInt(0x07F8, 3) / 10;    //Need to fix bcdToInt...  
 
-            gameStats["lives"] = (int)emu.CPU.AddressRead(0x075A);
-            gameStats["coins"] = (int)emu.CPU.AddressRead(0x075E);
-            gameStats["world"] = (int)emu.CPU.AddressRead(0x075F) + 1;
-            gameStats["level"] = (int)emu.CPU.AddressRead(0x0760) + 1;
+            gameStats["lives"] = (int)_emulator.CPU.AddressRead(0x075A);
+            gameStats["coins"] = (int)_emulator.CPU.AddressRead(0x075E);
+            gameStats["world"] = (int)_emulator.CPU.AddressRead(0x075F) + 1;
+            gameStats["level"] = (int)_emulator.CPU.AddressRead(0x0760) + 1;
         }
 
         private void updateInputs()
@@ -102,10 +127,10 @@ namespace dotNES.Neat
         {
             for (uint i = 0; i < 5; i++)
             {
-                if ((Convert.ToBoolean(emu.CPU.AddressRead(0xF + i))))
+                if ((Convert.ToBoolean(_emulator.CPU.AddressRead(0xF + i))))
                 {
-                    enemy[i, 0] = (int)(emu.CPU.AddressRead(0x6E + i) * 0x100 + emu.CPU.AddressRead(0x87 + i));
-                    enemy[i, 1] = (int)emu.CPU.AddressRead(0xCF + i) + 12;
+                    enemy[i, 0] = (int)(_emulator.CPU.AddressRead(0x6E + i) * 0x100 + _emulator.CPU.AddressRead(0x87 + i));
+                    enemy[i, 1] = (int)_emulator.CPU.AddressRead(0xCF + i) + 12;
                 }
                 else
                 {
@@ -114,6 +139,8 @@ namespace dotNES.Neat
                 }
             }
         }
+
+        // --- Utilities
 
         private int getTile(int dx, int dy)
         {
@@ -129,7 +156,7 @@ namespace dotNES.Neat
             if (suby >= 13 || suby < 0)
                 return 0;
 
-            if (emu.CPU.AddressRead(addr) == 0)
+            if (_emulator.CPU.AddressRead(addr) == 0)
                 return 1;
             else
                 return 0;
@@ -139,7 +166,7 @@ namespace dotNES.Neat
         {
             int intVal = 0;
             for (uint i = startAddress + length, j = 1; i >= startAddress; i--, j *= 10)
-                intVal += (int)(emu.CPU.AddressRead(i) * j);
+                intVal += (int)(_emulator.CPU.AddressRead(i) * j);
             return intVal;
         }
     }

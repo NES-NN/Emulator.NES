@@ -61,6 +61,9 @@
       <HintPath>..\packages\Costura.Fody.1.6.2\lib\dotnet\Costura.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="OpenGL.Net, Version=0.5.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenGL.Net.0.5.2\lib\net35\OpenGL.Net.dll</HintPath>
     </Reference>
@@ -81,6 +84,12 @@
     </Reference>
     <Reference Include="SharpDX.Mathematics, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.Mathematics.4.0.1\lib\net45\SharpDX.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpNeatDomains">
+      <HintPath>lib\SharpNeatDomains.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpNeatLib">
+      <HintPath>lib\SharpNeatLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -116,8 +125,12 @@
     <Compile Include="Mappers\GxROM.cs" />
     <Compile Include="Mappers\Jaleco.cs" />
     <Compile Include="Mappers\Nina003006.cs" />
+    <Compile Include="Neat\SimpleNeatExperiment.cs" />
     <Compile Include="Neat\SMB.cs" />
+    <Compile Include="Neat\SMBEvaluator.cs" />
+    <Compile Include="Neat\SMBExperiment.cs" />
     <Compile Include="Neat\SMBNeatInstance.cs" />
+    <Compile Include="Neat\SMBNeatPlayer.cs" />
     <Compile Include="Neat\SMBNeatUI.cs">
       <SubType>Form</SubType>
     </Compile>

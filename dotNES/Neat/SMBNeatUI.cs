@@ -17,11 +17,11 @@ namespace dotNES.Neat
     partial class SMBNeatUI : Form
     {
         private static int Instances = 1;
-        private SMBNeatInstance[] SMBNeatInstance = new SMBNeatInstance[Instances];
-        private int currentInstance = 0;
+        private SMBNeatInstance[] _smbNeatInstances = new SMBNeatInstance[Instances];
+        private int _currentInstance = 0;
 
         private static int refreshTime = 16;
-        private string rom;
+        private string _rom;
 
         private Dictionary<int, String>
             playerState = new Dictionary<int, String>()
@@ -48,22 +48,43 @@ namespace dotNES.Neat
                         { 0x03, "Sliding down flagpole" }
             };
 
-        private int[] inputs;
-
         public SMBNeatUI()
         {
             InitializeComponent();
             for (int i = 0; i < Instances; i++)
             {
-                SMBNeatInstance[i] = null;
+                _smbNeatInstances[i] = null;
                 InstanceList.Items.Add(i);
             }
-            InstanceList.SelectedIndex = currentInstance;
+            InstanceList.SelectedIndex = _currentInstance;
         }
 
-        private void RefreshGameStats()
+        private void SMBNeat_Load(object sender, EventArgs e)
         {
-            Dictionary<String, int> gameStats = SMBNeatInstance[currentInstance].smb.GameStats;
+            Timer timer = new Timer();
+            timer.Interval = (refreshTime);
+            timer.Tick += new EventHandler(refresh_Tick);
+            timer.Start();
+        }
+
+        private void SMBNeat_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _smbNeatInstances[_currentInstance].GameInstanceRunning = false;
+            //_gameThread?.Abort(); Need to fix this
+        }
+
+        private void refresh_Tick(object sender, EventArgs e)
+        {
+            if (_smbNeatInstances[_currentInstance] != null)
+                if (_smbNeatInstances[_currentInstance].GameInstanceRunning)
+                    RefreshGameUIStats();
+        }
+
+        private void RefreshGameUIStats()
+        {
+            // Update Game Statistics
+
+            Dictionary<String, int> gameStats = _smbNeatInstances[_currentInstance].SMB.GameStats;
 
             score.Text = Convert.ToString(gameStats["score"]);
             lives.Text = Convert.ToString(gameStats["lives"]);
@@ -72,37 +93,40 @@ namespace dotNES.Neat
             level.Text = Convert.ToString(gameStats["level"]);
             time.Text = Convert.ToString(gameStats["time"]);
 
-            Dictionary<String, int> platerStats = SMBNeatInstance[currentInstance].smb.PlayerStats;
+            // Update Player Statistics
 
-            levelX.Text = Convert.ToString(platerStats["x"]);
-            levelY.Text = Convert.ToString(platerStats["y"]);
+            Dictionary<String, int> playerStats = _smbNeatInstances[_currentInstance].SMB.PlayerStats;
 
-            screenX.Text = Convert.ToString(platerStats["screenX"]);
-            screenY.Text = Convert.ToString(platerStats["screenY"]);
+            levelX.Text = Convert.ToString(playerStats["x"]);
+            levelY.Text = Convert.ToString(playerStats["y"]);
+
+            screenX.Text = Convert.ToString(playerStats["screenX"]);
+            screenY.Text = Convert.ToString(playerStats["screenY"]);
 
             String value;
             state.Text = playerState.TryGetValue(
-                platerStats["state"], out value) ? value : "-----";
+                playerStats["state"], out value) ? value : "-----";
 
             floatState.Text = playerFloatState.TryGetValue(
-                platerStats["floatState"], out value) ? value : "-----";
+                playerStats["floatState"], out value) ? value : "-----";
 
-            powerUP.Text = (platerStats["powerUP"] == 0) ? "Small" :            //This memory address jumps around all over
-                             (platerStats["powerUP"] == 1) ? "Big" : "Fiery";   //the place, this was the safest way to do it
+            powerUP.Text = (playerStats["powerUP"] == 0) ? "Small" :            //This memory address jumps around all over
+                             (playerStats["powerUP"] == 1) ? "Big" : "Fiery";   //the place, this was the safest way to do it
 
-            direction.Text = (platerStats["direction"] == 1) ? "Right" :
-                             (platerStats["direction"] == 2) ? "Left" : "";
+            direction.Text = (playerStats["direction"] == 1) ? "Right" :
+                             (playerStats["direction"] == 2) ? "Left" : "";
+
+            // Draw inputs to UI
 
             pictureBoxInputs.Image = new Bitmap(170, 170);
             Graphics m = Graphics.FromImage(pictureBoxInputs.Image);
             Pen gridPen = new Pen(Color.LightGray, 0.5F);
 
             m.DrawRectangle(gridPen, new Rectangle(0, 0, 169, 169));
-
             m.FillRectangle(Brushes.Red, new Rectangle(78, 78, 13, 13));
 
+            int[] inputs = _smbNeatInstances[_currentInstance].SMB.Inputs;
 
-            inputs = SMBNeatInstance[currentInstance].smb.Inputs;
             for (int i = 0; i < inputs.Length; i++)
             {
                 if (inputs[i] == 0)
@@ -112,22 +136,14 @@ namespace dotNES.Neat
             }
         }
 
-        private void refresh_Tick(object sender, EventArgs e)
+        // --- UI Actions
+
+        private void InstanceList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (SMBNeatInstance[currentInstance] != null)
-                if(SMBNeatInstance[currentInstance].GameInstanceRunning)
-                    RefreshGameStats();
-        }
-        
-        private void SMBNeat_Load(object sender, EventArgs e)
-        {
-            Timer timer = new Timer();
-            timer.Interval = (refreshTime);
-            timer.Tick += new EventHandler(refresh_Tick);
-            timer.Start();
+            _currentInstance = Convert.ToInt32(InstanceList.GetItemText(InstanceList.SelectedItem));
         }
 
-        private void buttonLoadRom_Click(object sender, EventArgs e)
+        private void ButtonLoadRom_Click(object sender, EventArgs e)
         {
             var dialog = new OpenFileDialog
             {
@@ -135,34 +151,28 @@ namespace dotNES.Neat
             };
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                rom = dialog.FileName;
+                _rom = dialog.FileName;
                 labelRomName.Text = dialog.SafeFileName;
-                output.Text += "Loaded Rom : " + rom + "\n";
+                output.Text += "Loaded Rom : " + _rom + "\n";
             }
-        }
-
-        private void SMBNeat_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            SMBNeatInstance[currentInstance].GameInstanceRunning = false;
-            //_gameThread?.Abort(); Need to fix this
         }
 
         private void ButtonStartTraining_Click(object sender, EventArgs e)
         {
-            if (SMBNeatInstance[currentInstance] != null)
-                if (SMBNeatInstance[currentInstance].GameInstanceRunning)
+            if (_smbNeatInstances[_currentInstance] != null)
+                if (_smbNeatInstances[_currentInstance].GameInstanceRunning)
                 {
-                    SMBNeatInstance[currentInstance].Suspended = true;
+                    _smbNeatInstances[_currentInstance].Suspended = true;
                     ButtonStartTraining.Text = "Play";
                 }
                 else
                 {
-                    SMBNeatInstance[currentInstance].Suspended = false;
+                    _smbNeatInstances[_currentInstance].Suspended = false;
                     ButtonStartTraining.Text = "Pause";
                 }
             else
             {
-                SMBNeatInstance[currentInstance] = new SMBNeatInstance(checkBoxShowUI.Checked, rom);
+                _smbNeatInstances[_currentInstance] = new SMBNeatInstance(checkBoxShowUI.Checked, _rom);
                 ButtonStartTraining.Text = "Pause";
             }
             checkBoxShowUI.Enabled = false;
@@ -170,18 +180,13 @@ namespace dotNES.Neat
 
         private void ButtonSaveState_Click(object sender, EventArgs e)
         {
-            SMBNeatInstance[currentInstance].SaveState();
-        }
-
-        private void InstanceList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            currentInstance = Convert.ToInt32(InstanceList.GetItemText(InstanceList.SelectedItem));
+            _smbNeatInstances[_currentInstance].SaveState();
         }
 
         private void ButtonLoadState_Click(object sender, EventArgs e)
         {
-            SMBNeatInstance[currentInstance] = new SMBNeatInstance();
-            SMBNeatInstance[currentInstance].LoadState(checkBoxShowUI.Checked);
+            _smbNeatInstances[_currentInstance] = new SMBNeatInstance();
+            _smbNeatInstances[_currentInstance].LoadState(checkBoxShowUI.Checked);
             checkBoxShowUI.Enabled = false;
         }
     }

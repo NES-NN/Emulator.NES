@@ -1,26 +1,35 @@
-﻿using dotNES.Controllers;
+﻿using System;
 using System.IO;
+using System.Threading;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
+using System.Xml;
+using System.Collections.Generic;
+using dotNES.Controllers;
+using SharpNeat.EvolutionAlgorithms;
+using SharpNeat.Genomes.Neat;
 
 namespace dotNES.Neat
 {
     class SMBNeatInstance
     {
-        private IController controller;
-        private Emulator emu;
-        public SMB smb;
-        private UI ui;
+        private IController _controller;
+        private SMB _smbState;
+        private Emulator _emulator;
+        private UI _ui;
+        private Thread _gameThread;
 
-        private System.Threading.Thread gameThread;
+        public SMB SMB
+        {
+            get { return _smbState; }
+        }
 
-        private bool gameInstanceRunning = false;
-        private bool suspended = false;
+        private bool _gameInstanceRunning = false;
+        private bool _suspended = false;
 
-        public bool GameInstanceRunning { get => gameInstanceRunning; set => gameInstanceRunning = value; }
-        public bool Suspended { get => suspended; set => suspended = value; }
-
+        public bool GameInstanceRunning { get => _gameInstanceRunning; set => _gameInstanceRunning = value; }
+        public bool Suspended { get => _suspended; set => _suspended = value; }
 
         public SMBNeatInstance() { }
 
@@ -31,16 +40,18 @@ namespace dotNES.Neat
 
         private void StartGameInstance(bool withUI, string rom)
         {
-            controller = new NES001Controller();
-            emu = new Emulator(rom, controller);
-            smb = new SMB(ref emu);
+            _controller = new NES001Controller();
+            _emulator = new Emulator(rom, _controller);
+
+            _smbState = new SMB(ref _emulator);
+            _smbState.Start();
 
             StartGameThread(withUI);
         }
 
         public void SaveState()
         {
-            suspended = true;
+            _suspended = true;
             var dialog = new SaveFileDialog
             {
                 DefaultExt = "bin",
@@ -50,10 +61,10 @@ namespace dotNES.Neat
             {
                 IFormatter formatter = new BinaryFormatter();
                 Stream stream = new FileStream(dialog.FileName, FileMode.Create, FileAccess.Write, FileShare.None);
-                formatter.Serialize(stream, emu);
+                formatter.Serialize(stream, _emulator);
                 stream.Close();
             }
-            suspended = false;
+            _suspended = false;
         }
 
         public void LoadState(bool withUI)
@@ -68,11 +79,14 @@ namespace dotNES.Neat
                 IController c = new NES001Controller();
                 IFormatter formatter = new BinaryFormatter();
                 Stream stream = new FileStream(dialog.FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                emu = (Emulator)formatter.Deserialize(stream);
-                emu.Controller = c; controller = c;
+                _emulator = (Emulator)formatter.Deserialize(stream);
+                _emulator.Controller = c; _controller = c;
                 stream.Close();
 
-                smb = new SMB(ref emu);
+                // Halt SMB background timer and reset...
+                _smbState.Stop();
+                _smbState = new SMB(ref _emulator);
+                _smbState.Start();
 
                 StartGameThread(withUI);
             }
@@ -82,34 +96,57 @@ namespace dotNES.Neat
         {
             if (withUI)
             {
-                if(ui != null && ui.Visible)
-                    ui.Close();
-                ui = new UI(ref emu, ref controller);
-                ui.Show();
+                if(_ui != null && _ui.Visible)
+                    _ui.Close();
+                _ui = new UI(ref _emulator, ref _controller);
+                _ui.Show();
+                _gameInstanceRunning = true;
             }
             else
             {
-                gameInstanceRunning = false;
-                gameThread?.Abort();
+                _gameInstanceRunning = false;
+                _gameThread?.Abort();
 
-                gameThread = new System.Threading.Thread(() =>
+                _gameThread = new Thread(() =>
                 {
-                    gameInstanceRunning = true;
-                    while (gameInstanceRunning)
+                    _gameInstanceRunning = true;
+                    while (_gameInstanceRunning)
                     {
-                        if (suspended)
+                        if (_suspended)
                         {
-                            System.Threading.Thread.Sleep(100);
+                            Thread.Sleep(100);
                             continue;
                         }
-                        emu.PPU.ProcessFrame();
+                        _emulator.PPU.ProcessFrame();
                     }
                 });
-                gameThread.Start();
-                gameInstanceRunning = true;
-
-
+                _gameThread.Start();
+                _gameInstanceRunning = true;
             }
+        }
+
+        // --- NEAT Functions
+
+        private NeatEvolutionAlgorithm<NeatGenome> _ea;
+
+        private void StartNeatEvolve(object sender, EventArgs e)
+        {
+            SMBExperiment experiment = new SMBExperiment(ref _emulator.Controller, ref _smbState);
+
+            XmlDocument xmlConfig = new XmlDocument();
+            xmlConfig.Load("smb.config.xml");
+            experiment.Initialize("Super Mario Bros", xmlConfig.DocumentElement);
+
+            _ea = experiment.CreateEvolutionAlgorithm();
+            _ea.UpdateEvent += new EventHandler(ea_UpdateEvent);
+            _ea.StartContinue();
+        }
+
+        private void ea_UpdateEvent(object sender, EventArgs e)
+        {
+            Console.WriteLine(string.Format("gen={0:N0} bestFitness={1:N6}", _ea.CurrentGeneration, _ea.Statistics._maxFitness));
+            var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { _ea.CurrentChampGenome }, false);
+            doc.Save("smb_champion.xml");
         }
     }
 }
