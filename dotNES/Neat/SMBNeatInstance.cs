@@ -28,7 +28,17 @@ namespace dotNES.Neat
         private bool _gameInstanceRunning = false;
         private bool _suspended = false;
 
-        public bool GameInstanceRunning { get => _gameInstanceRunning; set => _gameInstanceRunning = value; }
+        public bool GameInstanceRunning
+        {
+            get => _gameInstanceRunning;
+            set
+            {
+                if (_ui != null && _ui.Visible)
+                    _ui.Close();
+                _gameInstanceRunning = value;
+            }
+        }
+
         public bool Suspended { get => _suspended; set => _suspended = value; }
 
         public SMBNeatInstance() { }

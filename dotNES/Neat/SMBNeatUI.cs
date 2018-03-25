@@ -69,8 +69,11 @@ namespace dotNES.Neat
 
         private void SMBNeat_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _smbNeatInstances[_currentInstance].GameInstanceRunning = false;
-            //_gameThread?.Abort(); Need to fix this
+            if (_smbNeatInstances[_currentInstance] != null)
+            {
+                _smbNeatInstances[_currentInstance].GameInstanceRunning = false;
+                //_gameThread?.Abort(); Need to fix this
+            }
         }
 
         private void refresh_Tick(object sender, EventArgs e)
