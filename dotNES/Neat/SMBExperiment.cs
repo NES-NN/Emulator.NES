@@ -8,21 +8,24 @@ using SharpNeat.Phenomes;
 using SharpNeat.Core;
 using dotNES.Controllers;
 
+using static dotNES.Neat.SMBNeatInstance;
+
 namespace dotNES.Neat
 {
     class SMBExperiment : SimpleNeatExperiment
     {
-        private IController _controller;
-        private SMB _smbState;
+        private GetControllerDelegate _controller;
+        private GetSMBDelegate _smbState;
+        private ResetStateDelegate _resetState;
 
         /// <summary>
         /// Creates a SMB Experiment with an embededded NES Controller.
         /// </summary>
-        /// <param name="controller"></param>
-        public SMBExperiment(ref IController controller, ref SMB smbState): base()
+        public SMBExperiment(GetControllerDelegate controller, GetSMBDelegate smbState, ResetStateDelegate resetState): base()
         {
             _controller = controller;
             _smbState = smbState;
+            _resetState = resetState;
         }
 
         /// <summary>
@@ -30,7 +33,7 @@ namespace dotNES.Neat
         /// </summary>
         public override IPhenomeEvaluator<IBlackBox> PhenomeEvaluator
         {
-            get { return new SMBEvaluator(ref _controller, ref _smbState); }
+            get { return new SMBEvaluator(_controller, _smbState, _resetState); }
         }
 
         /// <summary>
@@ -38,7 +41,7 @@ namespace dotNES.Neat
         /// </summary>
         public override int InputCount
         {
-            get { return _smbState.Inputs.Length; }
+            get { return 170; }
         }
 
         /// <summary>

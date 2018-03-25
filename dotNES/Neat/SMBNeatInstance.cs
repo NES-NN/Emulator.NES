@@ -57,6 +57,7 @@ namespace dotNES.Neat
             _smbState.Start();
 
             StartGameThread(withUI);
+            StartNeatEvolve();
         }
 
         public void SaveState()
@@ -140,11 +141,19 @@ namespace dotNES.Neat
 
         // --- NEAT Functions
 
+        public delegate IController GetControllerDelegate();
+        public delegate SMB GetSMBDelegate();
+        public delegate void ResetStateDelegate();
+
+        IController GetController() { return _emulator.Controller; }
+        SMB GetSMB() { return _smbState; }
+        void ResetState() { LoadState(false); }
+
         private NeatEvolutionAlgorithm<NeatGenome> _ea;
 
-        private void StartNeatEvolve(object sender, EventArgs e)
+        private void StartNeatEvolve()
         {
-            SMBExperiment experiment = new SMBExperiment(ref _emulator.Controller, ref _smbState);
+            SMBExperiment experiment = new SMBExperiment(GetController, GetSMB, ResetState);
 
             XmlDocument xmlConfig = new XmlDocument();
             xmlConfig.Load("smb.config.xml");
