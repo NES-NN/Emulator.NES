@@ -69,5 +69,18 @@ namespace dotNES.Neat
                 _controller.ReleaseKey_Manual(key);
             }
         }
+
+        /// <summary>
+        /// Releases all keys the player might be holding
+        /// </summary>
+        public void ReleaseAllKeys()
+        {
+            _controller.ReleaseKey_Manual(Keys.A);
+            _controller.ReleaseKey_Manual(Keys.S);
+            _controller.ReleaseKey_Manual(Keys.Up);
+            _controller.ReleaseKey_Manual(Keys.Down);
+            _controller.ReleaseKey_Manual(Keys.Left);
+            _controller.ReleaseKey_Manual(Keys.Right);
+        }
     }
 }

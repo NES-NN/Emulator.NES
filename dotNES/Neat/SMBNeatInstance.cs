@@ -53,9 +53,6 @@ namespace dotNES.Neat
             _controller = new NES001Controller();
             _emulator = new Emulator(rom, _controller);
 
-            _smbState = new SMB(ref _emulator);
-            _smbState.Start();
-
             StartGameThread(withUI);
             StartNeatEvolve();
         }
@@ -87,31 +84,31 @@ namespace dotNES.Neat
             };
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                IController c = new NES001Controller();
-                IFormatter formatter = new BinaryFormatter();
-                Stream stream = new FileStream(dialog.FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                _emulator = (Emulator)formatter.Deserialize(stream);
-                _emulator.Controller = c; _controller = c;
-                stream.Close();
-
-                // Halt SMB background timer and reset...
-                if (_smbState != null)
-                {
-                    _smbState.Stop();
-                }
-                _smbState = new SMB(ref _emulator);
-                _smbState.Start();
-
-                StartGameThread(withUI);
+                LoadState_Manual(withUI, dialog.FileName);
             }
+        }
+
+        private void LoadState_Manual(bool withUI, string fileName)
+        {
+            IController c = new NES001Controller();
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            _emulator = (Emulator)formatter.Deserialize(stream);
+            _emulator.Controller = c; _controller = c;
+            stream.Close();
+
+            StartGameThread(withUI);
         }
 
         private void StartGameThread(bool withUI)
         {
+            _smbState?.Stop();
+            _smbState = new SMB(ref _emulator);
+            _smbState.Start();
+
             if (withUI)
             {
-                if(_ui != null && _ui.Visible)
-                    _ui.Close();
+                _ui?.Close();
                 _ui = new UI(ref _emulator, ref _controller);
                 _ui.Show();
                 _gameInstanceRunning = true;
@@ -147,7 +144,7 @@ namespace dotNES.Neat
 
         IController GetController() { return _emulator.Controller; }
         SMB GetSMB() { return _smbState; }
-        void ResetState() { LoadState(false); }
+        void ResetState() { LoadState_Manual(false, "emu.bin"); }
 
         private NeatEvolutionAlgorithm<NeatGenome> _ea;
 

@@ -61,7 +61,7 @@ namespace dotNES.Neat
             double fitness = 0;
 
             // The amount of frames that can pass with Mario not making progress
-            int errorAllowance = 100;
+            int errorAllowance = 1000;
 
             SMBNeatPlayer neatPlayer = new SMBNeatPlayer(box, ref controller);
 
@@ -88,6 +88,9 @@ namespace dotNES.Neat
                 // Update fitness score
                 fitness++;
             }
+
+            // Ensure controller gets paused
+            neatPlayer.ReleaseAllKeys();
 
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);
