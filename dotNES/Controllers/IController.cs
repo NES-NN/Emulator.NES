@@ -10,6 +10,10 @@ namespace dotNES.Controllers
 
         void PressKey(KeyEventArgs e);
 
+        void PressKey_Manual(Keys key);
+
         void ReleaseKey(KeyEventArgs e);
+
+        void ReleaseKey_Manual(Keys key);
     }
 }

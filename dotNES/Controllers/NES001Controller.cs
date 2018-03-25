@@ -46,15 +46,25 @@ namespace dotNES.Controllers
 
         public void PressKey(KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.P) debug ^= true;
-            if (!_keyMapping.ContainsKey(e.KeyCode)) return;
-            data |= 1 << _keyMapping[e.KeyCode];
+            PressKey_Manual(e.KeyCode);
+        }
+
+        public void PressKey_Manual(Keys key)
+        {
+            if (key == Keys.P) debug ^= true;
+            if (!_keyMapping.ContainsKey(key)) return;
+            data |= 1 << _keyMapping[key];
         }
 
         public void ReleaseKey(KeyEventArgs e)
         {
-            if (!_keyMapping.ContainsKey(e.KeyCode)) return;
-            data &= ~(1 << _keyMapping[e.KeyCode]);
+            ReleaseKey_Manual(e.KeyCode);
+        }
+
+        public void ReleaseKey_Manual(Keys key)
+        {
+            if (!_keyMapping.ContainsKey(key)) return;
+            data &= ~(1 << _keyMapping[key]);
         }
     }
 }
