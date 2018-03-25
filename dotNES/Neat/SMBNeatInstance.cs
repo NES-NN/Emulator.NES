@@ -19,6 +19,7 @@ namespace dotNES.Neat
         private Emulator _emulator;
         private UI _ui;
         private Thread _gameThread;
+        private string _stateFileName = "emu.bin";
 
         public SMB SMB
         {
@@ -54,7 +55,6 @@ namespace dotNES.Neat
             _emulator = new Emulator(rom, _controller);
 
             StartGameThread(withUI);
-            StartNeatEvolve();
         }
 
         public void SaveState()
@@ -84,11 +84,15 @@ namespace dotNES.Neat
             };
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                LoadState_Manual(withUI, dialog.FileName);
+                // Store state fileName
+                _stateFileName = dialog.FileName;
+
+                // Load the state
+                LoadState_Manual(withUI, _stateFileName);
             }
         }
 
-        private void LoadState_Manual(bool withUI, string fileName)
+        public void LoadState_Manual(bool withUI, string fileName)
         {
             IController c = new NES001Controller();
             IFormatter formatter = new BinaryFormatter();
@@ -144,11 +148,11 @@ namespace dotNES.Neat
 
         IController GetController() { return _emulator.Controller; }
         SMB GetSMB() { return _smbState; }
-        void ResetState() { LoadState_Manual(false, "emu.bin"); }
+        void ResetState() { LoadState_Manual(false, _stateFileName); }
 
         private NeatEvolutionAlgorithm<NeatGenome> _ea;
 
-        private void StartNeatEvolve()
+        public void StartTraining_Neat()
         {
             SMBExperiment experiment = new SMBExperiment(GetController, GetSMB, ResetState);
 

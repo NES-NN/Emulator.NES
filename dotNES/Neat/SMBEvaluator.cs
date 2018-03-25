@@ -92,6 +92,9 @@ namespace dotNES.Neat
             // Ensure controller gets paused
             neatPlayer.ReleaseAllKeys();
 
+            // TODO: This throws an exception!
+            //_resetState();
+
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);
         }
@@ -101,7 +104,6 @@ namespace dotNES.Neat
         /// </summary>
         public void Reset()
         {
-            _resetState();
         }
         #endregion
     }

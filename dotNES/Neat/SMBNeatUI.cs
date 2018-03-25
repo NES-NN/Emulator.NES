@@ -160,11 +160,6 @@ namespace dotNES.Neat
             }
         }
 
-        private void ButtonStartTraining_Click(object sender, EventArgs e)
-        {
-            //Start Training
-        }
-
         private void ButtonStartRom_Click(object sender, EventArgs e)
         {
             if (_smbNeatInstances[_currentInstance] != null)
@@ -193,9 +188,27 @@ namespace dotNES.Neat
         
         private void ButtonLoadState_Click(object sender, EventArgs e)
         {
-            _smbNeatInstances[_currentInstance] = new SMBNeatInstance();
+            if (_smbNeatInstances[_currentInstance] == null)
+            {
+                _smbNeatInstances[_currentInstance] = new SMBNeatInstance(checkBoxShowUI.Checked, _rom);
+                ButtonStartRom.Text = "Pause";
+            }
+
             _smbNeatInstances[_currentInstance].LoadState(checkBoxShowUI.Checked);
             checkBoxShowUI.Enabled = false;
+        }
+
+        private void ButtonStartTraining_Click(object sender, EventArgs e)
+        {
+            if (_smbNeatInstances[_currentInstance] == null)
+            {
+                _smbNeatInstances[_currentInstance] = new SMBNeatInstance(checkBoxShowUI.Checked, _rom);
+                ButtonStartRom.Text = "Pause";
+            }
+
+            _smbNeatInstances[_currentInstance].LoadState(checkBoxShowUI.Checked);
+            checkBoxShowUI.Enabled = false;
+            _smbNeatInstances[_currentInstance].StartTraining_Neat();
         }
     }
 }
