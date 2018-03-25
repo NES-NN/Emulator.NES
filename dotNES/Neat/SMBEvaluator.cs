@@ -62,7 +62,7 @@ namespace dotNES.Neat
             // Until Mario becomes stuck or dies feed each input frame into the neural network and make a move!
             int levelX = _smbState.PlayerStats["x"];
 
-            while (errorAllowance > 0 || _smbState.GameStats["lives"] != 2)
+            while (errorAllowance > 0 || _smbState.GameStats["lives"] < 2)
             {
                 neatPlayer.MakeMove(_smbState.Inputs);
 
