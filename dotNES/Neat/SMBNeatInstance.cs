@@ -94,7 +94,10 @@ namespace dotNES.Neat
                 stream.Close();
 
                 // Halt SMB background timer and reset...
-                _smbState.Stop();
+                if (_smbState != null)
+                {
+                    _smbState.Stop();
+                }
                 _smbState = new SMB(ref _emulator);
                 _smbState.Start();
 
