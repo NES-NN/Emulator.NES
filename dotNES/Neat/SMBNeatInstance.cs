@@ -120,7 +120,7 @@ namespace dotNES.Neat
 
         internal void Stop()
         {
-            _ui?.Close();
+            _gameInstanceRunning = false;
             _gameThread?.Abort();
         }
 

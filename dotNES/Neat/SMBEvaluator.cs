@@ -16,14 +16,15 @@ namespace dotNES.Neat
     {
         private ulong _evalCount;
         private bool _stopConditionSatisfied;
-        //private SMBNeatInstance _SMBNeatInstance;
+        private SMBNeatUI _ui;
+        int count = 1;
 
         /// <summary>
         /// Creates a SMB evaluator with an embedded NES controller.
         /// </summary>
-        public SMBEvaluator(SMBNeatInstance SMBNeatInstance) : base()
+        public SMBEvaluator(SMBNeatUI ui) : base()
         {
-            //_SMBNeatInstance = SMBNeatInstance;
+            _ui = ui;
         }
 
         #region IPhenomeEvaluator<IBlackBox> Members
@@ -51,7 +52,9 @@ namespace dotNES.Neat
         /// </summary>
         public FitnessInfo Evaluate(IBlackBox box)
         {
-            Console.WriteLine("Evaluating new genome...");
+            int thisCount = count++;
+            _ui.Invoke(new Action(() => _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + "] Starting  Evaluation\n")));
+
             IController _controller = new NES001Controller(); ;
             SMBNeatInstance _SMBNeatInstance = new SMBNeatInstance(_controller);
 
@@ -104,7 +107,7 @@ namespace dotNES.Neat
             _SMBNeatInstance.Stop();
             _SMBNeatInstance = null;
 
-            Console.WriteLine ("Done, its fitness was: " + fitness + " - ");
+            _ui.Invoke(new Action(() => _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + "] Finished Evaluation - fitness : " + fitness + "\n")));
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);
         }

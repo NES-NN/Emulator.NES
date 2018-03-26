@@ -200,6 +200,11 @@ namespace dotNES.Neat
             checkBoxShowUI.Enabled = false;
         }
 
+        public void Log(string text)
+        {
+            output.Text += text;
+        }
+
         private void ButtonStartTraining_Click(object sender, EventArgs e)
         {
             //if (_smbNeatInstances[_currentInstance] == null)
@@ -223,8 +228,7 @@ namespace dotNES.Neat
 
         public void StartTraining_Neat()
         {
-
-            SMBExperiment experiment = new SMBExperiment(ref _smbNeatInstances[_currentInstance]);
+            SMBExperiment experiment = new SMBExperiment(this);
 
             XmlDocument xmlConfig = new XmlDocument();
             xmlConfig.Load("smb.config.xml");
@@ -238,7 +242,8 @@ namespace dotNES.Neat
         private void ea_UpdateEvent(object sender, EventArgs e)
         {
 
-            Console.WriteLine(string.Format("gen={0:N0} bestFitness={1:N6}", _ea.CurrentGeneration, _ea.Statistics._maxFitness));
+            Log(string.Format("gen={0:N0} bestFitness={1:N6}", _ea.CurrentGeneration, _ea.Statistics._maxFitness) + "\n");
+          
             var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { _ea.CurrentChampGenome }, false);
             doc.Save("smb_champion.xml");
         }

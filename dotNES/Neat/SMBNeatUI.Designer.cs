@@ -479,7 +479,7 @@
             // 
             // ButtonStartRom
             // 
-            this.ButtonStartRom.Location = new System.Drawing.Point(316, 12);
+            this.ButtonStartRom.Location = new System.Drawing.Point(232, 11);
             this.ButtonStartRom.Name = "ButtonStartRom";
             this.ButtonStartRom.Size = new System.Drawing.Size(75, 23);
             this.ButtonStartRom.TabIndex = 2;
@@ -489,7 +489,7 @@
             // 
             // ButtonLoadState
             // 
-            this.ButtonLoadState.Location = new System.Drawing.Point(397, 12);
+            this.ButtonLoadState.Location = new System.Drawing.Point(313, 11);
             this.ButtonLoadState.Name = "ButtonLoadState";
             this.ButtonLoadState.Size = new System.Drawing.Size(75, 23);
             this.ButtonLoadState.TabIndex = 1;
@@ -520,7 +520,7 @@
             // 
             // ButtonLoadRom
             // 
-            this.ButtonLoadRom.Location = new System.Drawing.Point(235, 12);
+            this.ButtonLoadRom.Location = new System.Drawing.Point(151, 11);
             this.ButtonLoadRom.Name = "ButtonLoadRom";
             this.ButtonLoadRom.Size = new System.Drawing.Size(75, 23);
             this.ButtonLoadRom.TabIndex = 7;
@@ -530,6 +530,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.ButtonStartTraining);
             this.groupBox4.Controls.Add(this.ButtonSaveState);
             this.groupBox4.Controls.Add(this.ButtonLoadState);
             this.groupBox4.Controls.Add(this.ButtonStartRom);
@@ -544,7 +545,7 @@
             // 
             // ButtonSaveState
             // 
-            this.ButtonSaveState.Location = new System.Drawing.Point(478, 12);
+            this.ButtonSaveState.Location = new System.Drawing.Point(394, 11);
             this.ButtonSaveState.Name = "ButtonSaveState";
             this.ButtonSaveState.Size = new System.Drawing.Size(75, 23);
             this.ButtonSaveState.TabIndex = 1;
@@ -585,15 +586,14 @@
             // InstanceList
             // 
             this.InstanceList.FormattingEnabled = true;
-            this.InstanceList.Location = new System.Drawing.Point(103, 13);
+            this.InstanceList.Location = new System.Drawing.Point(7, 13);
             this.InstanceList.Name = "InstanceList";
-            this.InstanceList.Size = new System.Drawing.Size(35, 21);
+            this.InstanceList.Size = new System.Drawing.Size(131, 21);
             this.InstanceList.TabIndex = 11;
             this.InstanceList.SelectedIndexChanged += new System.EventHandler(this.InstanceList_SelectedIndexChanged);
             // 
             // groupBox7
             // 
-            this.groupBox7.Controls.Add(this.ButtonStartTraining);
             this.groupBox7.Controls.Add(this.InstanceList);
             this.groupBox7.Location = new System.Drawing.Point(574, 12);
             this.groupBox7.Name = "groupBox7";
@@ -604,9 +604,9 @@
             // 
             // ButtonStartTraining
             // 
-            this.ButtonStartTraining.Location = new System.Drawing.Point(6, 11);
+            this.ButtonStartTraining.Location = new System.Drawing.Point(475, 11);
             this.ButtonStartTraining.Name = "ButtonStartTraining";
-            this.ButtonStartTraining.Size = new System.Drawing.Size(91, 23);
+            this.ButtonStartTraining.Size = new System.Drawing.Size(78, 23);
             this.ButtonStartTraining.TabIndex = 12;
             this.ButtonStartTraining.Text = "Start Training";
             this.ButtonStartTraining.UseVisualStyleBackColor = true;
