@@ -288,7 +288,7 @@ namespace dotNES
             };
             cm.Show(this, new Point(e.X, e.Y));
         }
-
+        
         private void UI_DragDrop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -307,6 +307,7 @@ namespace dotNES
                 }
             }
         }
+        
 
         private void UI_DragEnter(object sender, DragEventArgs e)
         {

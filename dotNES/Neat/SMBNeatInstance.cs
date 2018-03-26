@@ -15,16 +15,16 @@ namespace dotNES.Neat
     class SMBNeatInstance
     {
         public IController _controller;
-        public SMB SMB;
+        private SMB _SMB;
         private Emulator _emulator, _savedState;
         public UI _ui;
         private Thread _gameThread;
         private string _stateFileName = "emu.bin";
 
-        //public SMB SMB
-        //{
-        //    get { return SMB; }
-        //}
+        public SMB SMB
+        {
+            get { return _SMB; }
+        }
 
         private bool _gameInstanceRunning = false;
         private bool _suspended = false;
@@ -117,12 +117,18 @@ namespace dotNES.Neat
 
             return c;
         }
-        
+
+        internal void Stop()
+        {
+            _ui?.Close();
+            _gameThread?.Abort();
+        }
+
         private void StartGameThread(bool withUI)
         {
-            //SMB?.Stop();
-            SMB = new SMB(ref _emulator);
-            //SMB.Start();
+            _SMB?.Stop();
+            _SMB = new SMB(ref _emulator);
+            _SMB.Start();
 
             if (withUI)
             {

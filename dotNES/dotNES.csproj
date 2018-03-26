@@ -226,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="nes.ico" />
+    <Content Include="smb.config.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

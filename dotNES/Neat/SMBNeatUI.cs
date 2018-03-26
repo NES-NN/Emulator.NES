@@ -223,11 +223,8 @@ namespace dotNES.Neat
 
         public void StartTraining_Neat()
         {
-            //_smbNeatInstances[_currentInstance].LoadState(checkBoxShowUI.Checked);
 
-            //_smbNeatInstances[_currentInstance].Suspended = true;
-
-            SMBExperiment experiment = new SMBExperiment();
+            SMBExperiment experiment = new SMBExperiment(ref _smbNeatInstances[_currentInstance]);
 
             XmlDocument xmlConfig = new XmlDocument();
             xmlConfig.Load("smb.config.xml");
