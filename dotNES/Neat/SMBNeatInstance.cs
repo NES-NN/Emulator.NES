@@ -117,7 +117,7 @@ namespace dotNES.Neat
 
             return c;
         }
-
+        
         private void StartGameThread(bool withUI)
         {
             //SMB?.Stop();

@@ -60,13 +60,14 @@ namespace dotNES.Neat
             double fitness = 0;
 
             // The amount of frames that can pass with Mario not making progress
-            int errorAllowance = 5;
+            int errorAllowance = 10;
 
             SMBNeatPlayer neatPlayer = new SMBNeatPlayer(box, ref SMBNeatInstance._controller);
 
             // Until Mario becomes stuck or dies feed each input frame into the neural network and make a move!
             int levelX = SMBNeatInstance.SMB.PlayerStats["x"];
-            Console.WriteLine("levelX : " + SMBNeatInstance.SMB.PlayerStats["x"]);
+
+            //Console.WriteLine("levelX : " + SMBNeatInstance.SMB.PlayerStats["x"]);
 
 
             while (SMBNeatInstance.SMB.GameStats["lives"] >= 2 && errorAllowance >= 0)
@@ -74,30 +75,27 @@ namespace dotNES.Neat
                 WaitNSeconds(1); 
 
                 neatPlayer.MakeMove(SMBNeatInstance.SMB.Inputs);
+                SMBNeatInstance.SMB.UpdateStats();
+                
 
+                //Console.WriteLine("levelX : " + levelX + " SMBNeatInstance.SMB.PlayerStats[\"x\"] : " + SMBNeatInstance.SMB.PlayerStats["x"]);
+                
                 // Check whether Mario is advancing
-                if (levelX <= SMBNeatInstance.SMB.PlayerStats["x"])
-                {
-                    errorAllowance--; Console.WriteLine("errorAllowance : " + errorAllowance);
-                }
-                else
-                {
-                    levelX = SMBNeatInstance.SMB.PlayerStats["x"]; Console.WriteLine("levelX : " + levelX);
-                }
+                if (levelX >= SMBNeatInstance.SMB.PlayerStats["x"])
+                    errorAllowance--;
+
+                levelX = SMBNeatInstance.SMB.PlayerStats["x"];
 
                 // Update eval count
                 _evalCount++;
 
                 // Update fitness score
-                fitness++;
-
-                SMBNeatInstance.SMB.UpdateStats();
-            }
+                fitness++;            }
 
             // Ensure controller gets paused
             neatPlayer.ReleaseAllKeys();
 
-            SMBNeatInstance._ui?.Close();
+            SMBNeatInstance._ui.Close();
 
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);
