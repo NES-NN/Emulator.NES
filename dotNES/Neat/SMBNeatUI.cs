@@ -202,7 +202,8 @@ namespace dotNES.Neat
 
         public void Log(string text)
         {
-            output.Text += text;
+            output.Focus();
+            output.AppendText(text);
         }
 
         private void ButtonStartTraining_Click(object sender, EventArgs e)
