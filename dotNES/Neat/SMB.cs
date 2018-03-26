@@ -55,6 +55,13 @@ namespace dotNES.Neat
             updateInputs();
         }
 
+        public void UpdateStats()
+        {
+            updateGameStats();
+            updatePlayerStats();
+            updateInputs();
+        }
+
         // --- Getters
 
         public int[] Inputs

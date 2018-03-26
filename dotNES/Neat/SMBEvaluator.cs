@@ -52,8 +52,11 @@ namespace dotNES.Neat
             IController _controller = new NES001Controller(); ;
             SMBNeatInstance SMBNeatInstance = new SMBNeatInstance(_controller);
 
-            SMBNeatInstance.LoadState_Manual(true, "D:\\Users\\Loic\\Dropbox\\Projects\\NES-NN\\Emulator.NES\\dotNES\\bin\\Debug\\emu.bin");
+            SMBNeatInstance.LoadState_Manual(true, "emu.bin");
 
+
+            SMBNeatInstance.SMB.UpdateStats();
+            WaitNSeconds(1);
             double fitness = 0;
 
             // The amount of frames that can pass with Mario not making progress
@@ -63,23 +66,23 @@ namespace dotNES.Neat
 
             // Until Mario becomes stuck or dies feed each input frame into the neural network and make a move!
             int levelX = SMBNeatInstance.SMB.PlayerStats["x"];
+            Console.WriteLine("levelX : " + SMBNeatInstance.SMB.PlayerStats["x"]);
 
-            SMBNeatInstance.Suspended = false;
 
-            while (errorAllowance > 0 && SMBNeatInstance.SMB.GameStats["lives"] >= 2)
+            while (SMBNeatInstance.SMB.GameStats["lives"] >= 2 && errorAllowance >= 0)
             {
-                WaitNSeconds(1); Console.WriteLine("errorAllowance : " + errorAllowance);
+                WaitNSeconds(1); 
 
                 neatPlayer.MakeMove(SMBNeatInstance.SMB.Inputs);
 
                 // Check whether Mario is advancing
                 if (levelX <= SMBNeatInstance.SMB.PlayerStats["x"])
                 {
-                    errorAllowance--;
+                    errorAllowance--; Console.WriteLine("errorAllowance : " + errorAllowance);
                 }
                 else
                 {
-                    levelX = SMBNeatInstance.SMB.PlayerStats["x"];
+                    levelX = SMBNeatInstance.SMB.PlayerStats["x"]; Console.WriteLine("levelX : " + levelX);
                 }
 
                 // Update eval count
@@ -87,6 +90,8 @@ namespace dotNES.Neat
 
                 // Update fitness score
                 fitness++;
+
+                SMBNeatInstance.SMB.UpdateStats();
             }
 
             // Ensure controller gets paused
@@ -100,7 +105,7 @@ namespace dotNES.Neat
 
 
 
-        private void WaitNSeconds(int seconds)
+        private void WaitNSeconds(double seconds)
         {
             if (seconds < 1) return;
             DateTime _desired = DateTime.Now.AddSeconds(seconds);
