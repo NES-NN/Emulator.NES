@@ -19,7 +19,7 @@ namespace dotNES.Neat
 {
     partial class SMBNeatUI : Form
     {
-        private static int Instances = 1;
+        private static int Instances = 2;
         private SMBNeatInstance[] _smbNeatInstances = new SMBNeatInstance[Instances];
         private int _currentInstance = 0;
 
@@ -146,6 +146,11 @@ namespace dotNES.Neat
         private void InstanceList_SelectedIndexChanged(object sender, EventArgs e)
         {
             _currentInstance = Convert.ToInt32(InstanceList.GetItemText(InstanceList.SelectedItem));
+        }
+
+        public void UpdateInstance (int index, ref SMBNeatInstance instance)
+        {
+            _smbNeatInstances[index] = instance;
         }
 
         private void ButtonLoadRom_Click(object sender, EventArgs e)

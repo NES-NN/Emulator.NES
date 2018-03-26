@@ -53,13 +53,17 @@ namespace dotNES.Neat
         public FitnessInfo Evaluate(IBlackBox box)
         {
             int thisCount = count++;
-            _ui.Invoke(new Action(() => _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + "] Starting  Evaluation\n")));
+            int displayID = thisCount % 2;
 
+            _ui.Invoke(new Action(() => _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + " Display "+ displayID + "] Starting  Evaluation\n")));
+            
             IController _controller = new NES001Controller(); ;
             SMBNeatInstance _SMBNeatInstance = new SMBNeatInstance(_controller);
 
             _SMBNeatInstance.LoadState_Manual(false, "emu.bin");
 
+            //Send back SMBNeatInstance to the UI so you know what the hell is going on. 
+            _ui.Invoke(new Action(() => _ui.UpdateInstance(displayID, ref _SMBNeatInstance)));
 
             _SMBNeatInstance.SMB.UpdateStats();
             WaitNSeconds(1);

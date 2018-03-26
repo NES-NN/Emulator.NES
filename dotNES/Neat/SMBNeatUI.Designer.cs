@@ -71,6 +71,7 @@
             this.labelRomName = new System.Windows.Forms.Label();
             this.ButtonLoadRom = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.ButtonStartTraining = new System.Windows.Forms.Button();
             this.ButtonSaveState = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -78,7 +79,6 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.InstanceList = new System.Windows.Forms.ComboBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.ButtonStartTraining = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxInputs)).BeginInit();
@@ -543,6 +543,16 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Game Managment";
             // 
+            // ButtonStartTraining
+            // 
+            this.ButtonStartTraining.Location = new System.Drawing.Point(475, 11);
+            this.ButtonStartTraining.Name = "ButtonStartTraining";
+            this.ButtonStartTraining.Size = new System.Drawing.Size(78, 23);
+            this.ButtonStartTraining.TabIndex = 12;
+            this.ButtonStartTraining.Text = "Start Training";
+            this.ButtonStartTraining.UseVisualStyleBackColor = true;
+            this.ButtonStartTraining.Click += new System.EventHandler(this.ButtonStartTraining_Click);
+            // 
             // ButtonSaveState
             // 
             this.ButtonSaveState.Location = new System.Drawing.Point(394, 11);
@@ -576,6 +586,7 @@
             // checkBoxShowUI
             // 
             this.checkBoxShowUI.AutoSize = true;
+            this.checkBoxShowUI.Enabled = false;
             this.checkBoxShowUI.Location = new System.Drawing.Point(7, 20);
             this.checkBoxShowUI.Name = "checkBoxShowUI";
             this.checkBoxShowUI.Size = new System.Drawing.Size(67, 17);
@@ -601,16 +612,6 @@
             this.groupBox7.TabIndex = 11;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Instance";
-            // 
-            // ButtonStartTraining
-            // 
-            this.ButtonStartTraining.Location = new System.Drawing.Point(475, 11);
-            this.ButtonStartTraining.Name = "ButtonStartTraining";
-            this.ButtonStartTraining.Size = new System.Drawing.Size(78, 23);
-            this.ButtonStartTraining.TabIndex = 12;
-            this.ButtonStartTraining.Text = "Start Training";
-            this.ButtonStartTraining.UseVisualStyleBackColor = true;
-            this.ButtonStartTraining.Click += new System.EventHandler(this.ButtonStartTraining_Click);
             // 
             // SMBNeatUI
             // 
