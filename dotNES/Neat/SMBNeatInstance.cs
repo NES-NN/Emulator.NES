@@ -108,7 +108,7 @@ namespace dotNES.Neat
             StartGameThread(withUI);
         }
 
-        public IController RestartInstance ()
+        public IController RestartInstance()
         {
             IController c = new NES001Controller();
             _suspended = true;
@@ -121,6 +121,7 @@ namespace dotNES.Neat
         internal void Stop()
         {
             _gameInstanceRunning = false;
+            Thread.Sleep(1000);
             _gameThread?.Abort();
         }
 
