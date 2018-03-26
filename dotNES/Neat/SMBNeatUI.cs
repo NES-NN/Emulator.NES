@@ -207,8 +207,11 @@ namespace dotNES.Neat
 
         public void Log(string text)
         {
-            output.Focus();
-            output.AppendText(text);
+            Invoke(new Action(() =>
+            {
+                output.Focus();
+                output.AppendText(text);
+            }));
         }
 
         private void ButtonStartTraining_Click(object sender, EventArgs e)

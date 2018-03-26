@@ -55,7 +55,7 @@ namespace dotNES.Neat
             int thisCount = count++;
             int displayID = thisCount % 2;
 
-            _ui.Invoke(new Action(() => _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + " Display "+ displayID + "] Starting  Evaluation\n")));
+            _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + " Display "+ displayID + "] Starting  Evaluation\n");
             
             IController _controller = new NES001Controller(); ;
             SMBNeatInstance _SMBNeatInstance = new SMBNeatInstance(_controller);
@@ -111,7 +111,7 @@ namespace dotNES.Neat
             _SMBNeatInstance.Stop();
             _SMBNeatInstance = null;
 
-            _ui.Invoke(new Action(() => _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + "] Finished Evaluation - fitness : " + fitness + "\n")));
+            _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + "] Finished Evaluation - fitness : " + fitness + "\n");
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);
         }
