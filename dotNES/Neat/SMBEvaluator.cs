@@ -8,6 +8,7 @@ using SharpNeat.Phenomes;
 using dotNES.Controllers;
 
 using static dotNES.Neat.SMBNeatInstance;
+using System.Threading;
 
 namespace dotNES.Neat
 {
@@ -16,18 +17,11 @@ namespace dotNES.Neat
         private ulong _evalCount;
         private bool _stopConditionSatisfied;
 
-        private GetControllerDelegate _controller;
-        private GetSMBDelegate _smbState;
-        private ResetStateDelegate _resetState;
-
         /// <summary>
         /// Creates a SMB evaluator with an embedded NES controller.
         /// </summary>
-        public SMBEvaluator(GetControllerDelegate controller, GetSMBDelegate smbState, ResetStateDelegate resetState) : base()
+        public SMBEvaluator() : base()
         {
-            _controller = controller;
-            _smbState = smbState;
-            _resetState = resetState;
         }
 
         #region IPhenomeEvaluator<IBlackBox> Members
@@ -55,31 +49,37 @@ namespace dotNES.Neat
         /// </summary>
         public FitnessInfo Evaluate(IBlackBox box)
         {
-            IController controller = _controller();
-            SMB smbState = _smbState();
+            IController _controller = new NES001Controller(); ;
+            SMBNeatInstance SMBNeatInstance = new SMBNeatInstance(_controller);
+
+            SMBNeatInstance.LoadState_Manual(true, "D:\\Users\\Loic\\Dropbox\\Projects\\NES-NN\\Emulator.NES\\dotNES\\bin\\Debug\\emu.bin");
 
             double fitness = 0;
 
             // The amount of frames that can pass with Mario not making progress
-            int errorAllowance = 1000;
+            int errorAllowance = 5;
 
-            SMBNeatPlayer neatPlayer = new SMBNeatPlayer(box, ref controller);
+            SMBNeatPlayer neatPlayer = new SMBNeatPlayer(box, ref SMBNeatInstance._controller);
 
             // Until Mario becomes stuck or dies feed each input frame into the neural network and make a move!
-            int levelX = smbState.PlayerStats["x"];
+            int levelX = SMBNeatInstance.SMB.PlayerStats["x"];
 
-            while (errorAllowance > 0 || smbState.GameStats["lives"] < 2)
+            SMBNeatInstance.Suspended = false;
+
+            while (errorAllowance > 0 && SMBNeatInstance.SMB.GameStats["lives"] >= 2)
             {
-                neatPlayer.MakeMove(smbState.Inputs);
+                WaitNSeconds(1); Console.WriteLine("errorAllowance : " + errorAllowance);
+
+                neatPlayer.MakeMove(SMBNeatInstance.SMB.Inputs);
 
                 // Check whether Mario is advancing
-                if (levelX <= smbState.PlayerStats["x"])
+                if (levelX <= SMBNeatInstance.SMB.PlayerStats["x"])
                 {
                     errorAllowance--;
                 }
                 else
                 {
-                    levelX = smbState.PlayerStats["x"];
+                    levelX = SMBNeatInstance.SMB.PlayerStats["x"];
                 }
 
                 // Update eval count
@@ -92,11 +92,23 @@ namespace dotNES.Neat
             // Ensure controller gets paused
             neatPlayer.ReleaseAllKeys();
 
-            // TODO: This throws an exception!
-            _resetState();
+            SMBNeatInstance._ui?.Close();
 
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);
+        }
+
+
+
+        private void WaitNSeconds(int seconds)
+        {
+            if (seconds < 1) return;
+            DateTime _desired = DateTime.Now.AddSeconds(seconds);
+            while (DateTime.Now < _desired)
+            {
+                Thread.Sleep(1);
+                System.Windows.Forms.Application.DoEvents();
+            }
         }
 
         /// <summary>

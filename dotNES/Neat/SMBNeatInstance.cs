@@ -14,10 +14,10 @@ namespace dotNES.Neat
 {
     class SMBNeatInstance
     {
-        private IController _controller;
+        public IController _controller;
         private SMB _smbState;
         private Emulator _emulator, _savedState;
-        private UI _ui;
+        public UI _ui;
         private Thread _gameThread;
         private string _stateFileName = "emu.bin";
 
@@ -42,7 +42,10 @@ namespace dotNES.Neat
 
         public bool Suspended { get => _suspended; set => _suspended = value; }
 
-        public SMBNeatInstance() { }
+        public SMBNeatInstance(IController controller)
+        {
+            _controller = controller;
+        }
 
         public SMBNeatInstance(bool withUI, string rom)
         {
@@ -101,7 +104,18 @@ namespace dotNES.Neat
             _emulator.Controller = c; _controller = c;
             stream.Close();
             _savedState = _emulator;
+            
             StartGameThread(withUI);
+        }
+
+        public IController RestartInstance ()
+        {
+            IController c = new NES001Controller();
+            _suspended = true;
+            _emulator = _savedState;
+            _emulator.Controller = c; _controller = c;
+
+            return c;
         }
 
         private void StartGameThread(bool withUI)
@@ -138,45 +152,6 @@ namespace dotNES.Neat
                 _gameThread.Start();
                 _gameInstanceRunning = true;
             }
-        }
-
-        // --- NEAT Functions
-
-        public delegate IController GetControllerDelegate();
-        public delegate SMB GetSMBDelegate();
-        public delegate void ResetStateDelegate();
-
-        IController GetController() { return _emulator.Controller; }
-        SMB GetSMB() { return _smbState; }
-        void ResetState()
-        {
-            IController c = new NES001Controller();
-            _suspended = true;
-            _emulator = _savedState;
-            _emulator.Controller = c; _controller = c;
-            _suspended = false;
-        }
-
-        private NeatEvolutionAlgorithm<NeatGenome> _ea;
-
-        public void StartTraining_Neat()
-        {
-            SMBExperiment experiment = new SMBExperiment(GetController, GetSMB, ResetState);
-
-            XmlDocument xmlConfig = new XmlDocument();
-            xmlConfig.Load("smb.config.xml");
-            experiment.Initialize("Super Mario Bros", xmlConfig.DocumentElement);
-
-            _ea = experiment.CreateEvolutionAlgorithm();
-            _ea.UpdateEvent += new EventHandler(ea_UpdateEvent);
-            _ea.StartContinue();
-        }
-
-        private void ea_UpdateEvent(object sender, EventArgs e)
-        {
-            Console.WriteLine(string.Format("gen={0:N0} bestFitness={1:N6}", _ea.CurrentGeneration, _ea.Statistics._maxFitness));
-            var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { _ea.CurrentChampGenome }, false);
-            doc.Save("smb_champion.xml");
         }
     }
 }

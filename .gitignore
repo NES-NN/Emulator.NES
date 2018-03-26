@@ -326,3 +326,5 @@ __pycache__/
 # Debug files
 *.dSYM/
 *.su
+
+*.bin

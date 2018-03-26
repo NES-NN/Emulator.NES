@@ -1,4 +1,6 @@
 ﻿using dotNES.Controllers;
+using SharpNeat.EvolutionAlgorithms;
+using SharpNeat.Genomes.Neat;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +13,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace dotNES.Neat
 {
@@ -199,15 +202,49 @@ namespace dotNES.Neat
 
         private void ButtonStartTraining_Click(object sender, EventArgs e)
         {
-            if (_smbNeatInstances[_currentInstance] == null)
-            {
-                _smbNeatInstances[_currentInstance] = new SMBNeatInstance(checkBoxShowUI.Checked, _rom);
-                ButtonStartRom.Text = "Pause";
-            }
+            //if (_smbNeatInstances[_currentInstance] == null)
+            //{
+            //    _smbNeatInstances[_currentInstance] = new SMBNeatInstance();
+            //    ButtonStartRom.Text = "Pause";
+            //}
 
-            _smbNeatInstances[_currentInstance].LoadState(checkBoxShowUI.Checked);
-            checkBoxShowUI.Enabled = false;
-            _smbNeatInstances[_currentInstance].StartTraining_Neat();
+            //_smbNeatInstances[_currentInstance].LoadState(checkBoxShowUI.Checked);
+            //checkBoxShowUI.Enabled = false;
+            StartTraining_Neat();
         }
+
+        // --- NEAT Functions
+
+        public delegate IController GetControllerDelegate();
+        public delegate SMB GetSMBDelegate();
+        public delegate void ResetStateDelegate();
+        
+        private NeatEvolutionAlgorithm<NeatGenome> _ea;
+
+        public void StartTraining_Neat()
+        {
+            //_smbNeatInstances[_currentInstance].LoadState(checkBoxShowUI.Checked);
+
+            //_smbNeatInstances[_currentInstance].Suspended = true;
+
+            SMBExperiment experiment = new SMBExperiment();
+
+            XmlDocument xmlConfig = new XmlDocument();
+            xmlConfig.Load("smb.config.xml");
+            experiment.Initialize("Super Mario Bros", xmlConfig.DocumentElement);
+
+            _ea = experiment.CreateEvolutionAlgorithm();
+            _ea.UpdateEvent += new EventHandler(ea_UpdateEvent);
+            _ea.StartContinue();
+        }
+
+        private void ea_UpdateEvent(object sender, EventArgs e)
+        {
+
+            Console.WriteLine(string.Format("gen={0:N0} bestFitness={1:N6}", _ea.CurrentGeneration, _ea.Statistics._maxFitness));
+            var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { _ea.CurrentChampGenome }, false);
+            doc.Save("smb_champion.xml");
+        }
+
     }
 }

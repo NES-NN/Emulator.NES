@@ -14,18 +14,12 @@ namespace dotNES.Neat
 {
     class SMBExperiment : SimpleNeatExperiment
     {
-        private GetControllerDelegate _controller;
-        private GetSMBDelegate _smbState;
-        private ResetStateDelegate _resetState;
-
         /// <summary>
         /// Creates a SMB Experiment with an embededded NES Controller.
         /// </summary>
-        public SMBExperiment(GetControllerDelegate controller, GetSMBDelegate smbState, ResetStateDelegate resetState): base()
+        public SMBExperiment() : base()
         {
-            _controller = controller;
-            _smbState = smbState;
-            _resetState = resetState;
+
         }
 
         /// <summary>
@@ -33,7 +27,7 @@ namespace dotNES.Neat
         /// </summary>
         public override IPhenomeEvaluator<IBlackBox> PhenomeEvaluator
         {
-            get { return new SMBEvaluator(_controller, _smbState, _resetState); }
+            get { return new SMBEvaluator(); }
         }
 
         /// <summary>
