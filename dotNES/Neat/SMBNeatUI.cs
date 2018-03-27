@@ -3,6 +3,7 @@ using SharpNeat.EvolutionAlgorithms;
 using SharpNeat.Genomes.Neat;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
@@ -77,7 +78,6 @@ namespace dotNES.Neat
             {
                 _smbNeatInstances[_currentInstance].GameInstanceRunning = false;
             }
-            _ea?.Stop();
         }
 
         private void refresh_Tick(object sender, EventArgs e)
@@ -264,10 +264,18 @@ namespace dotNES.Neat
 
         private void UpdateBestFitness (NeatGenome genChamp)
         {
-            if (genChamp.EvaluationInfo.Fitness > _best.EvaluationInfo.Fitness)
+            if (_best != null)
+            {
+                if (genChamp.EvaluationInfo.Fitness > _best.EvaluationInfo.Fitness)
+                {
+                    _best = genChamp;
+                    BestFitness.Text = Convert.ToString(genChamp.EvaluationInfo.Fitness);
+                }
+            }
+            else
             {
                 _best = genChamp;
-                BestFitness.Text = Convert.ToString(genChamp.EvaluationInfo.Fitness);
+                ButtonPlayBest.Enabled = true;
             }
 
         }
