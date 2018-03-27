@@ -18,6 +18,8 @@ namespace dotNES.Neat
         private static int refreshTime = 16;
         private string _rom;
 
+        private double _bestFitness = 0;
+
         private Dictionary<int, String>
             playerState = new Dictionary<int, String>()
             {
@@ -244,9 +246,20 @@ namespace dotNES.Neat
         {
 
             Log(string.Format("gen={0:N0} bestFitness={1:N6}", _ea.CurrentGeneration, _ea.Statistics._maxFitness) + "\n");
-          
+
+            Invoke(new Action(() => { UpdateBestFitness(_ea.Statistics._maxFitness);}));
+
             var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { _ea.CurrentChampGenome }, false);
             doc.Save("smb_champion.xml");
+        }
+
+        private void UpdateBestFitness (double newFitness)
+        {
+            if(newFitness > _bestFitness)
+            {
+                _bestFitness = newFitness;
+                BestFitness.Text = Convert.ToString(_bestFitness);
+            }
         }
 
         /// --Play Best 

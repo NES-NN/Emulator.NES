@@ -80,6 +80,9 @@
             this.InstanceList = new System.Windows.Forms.ComboBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.ButtonPlayBest = new System.Windows.Forms.Button();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.LabelBestFitness = new System.Windows.Forms.Label();
+            this.BestFitness = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxInputs)).BeginInit();
@@ -91,6 +94,7 @@
             this.groupBox5.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.tableLayoutPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -579,7 +583,7 @@
             this.groupBox6.Controls.Add(this.checkBoxShowUI);
             this.groupBox6.Location = new System.Drawing.Point(574, 62);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(144, 306);
+            this.groupBox6.Size = new System.Drawing.Size(144, 286);
             this.groupBox6.TabIndex = 10;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Options";
@@ -624,11 +628,46 @@
             this.ButtonPlayBest.UseVisualStyleBackColor = true;
             this.ButtonPlayBest.Click += new System.EventHandler(this.ButtonPlayBest_Click);
             // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.2973F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 52.7027F));
+            this.tableLayoutPanel4.Controls.Add(this.LabelBestFitness, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.BestFitness, 1, 0);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(570, 354);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 1;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(148, 14);
+            this.tableLayoutPanel4.TabIndex = 12;
+            // 
+            // LabelBestFitness
+            // 
+            this.LabelBestFitness.AutoSize = true;
+            this.LabelBestFitness.Location = new System.Drawing.Point(3, 0);
+            this.LabelBestFitness.Name = "LabelBestFitness";
+            this.LabelBestFitness.Size = new System.Drawing.Size(64, 14);
+            this.LabelBestFitness.TabIndex = 0;
+            this.LabelBestFitness.Text = "Best Fitness :";
+            // 
+            // BestFitness
+            // 
+            this.BestFitness.AutoSize = true;
+            this.BestFitness.Location = new System.Drawing.Point(73, 0);
+            this.BestFitness.Name = "BestFitness";
+            this.BestFitness.Size = new System.Drawing.Size(22, 13);
+            this.BestFitness.TabIndex = 1;
+            this.BestFitness.Text = "0.0";
+            // 
             // SMBNeatUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(731, 405);
+            this.ClientSize = new System.Drawing.Size(724, 405);
+            this.Controls.Add(this.tableLayoutPanel4);
             this.Controls.Add(this.ButtonPlayBest);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox6);
@@ -654,6 +693,8 @@
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.groupBox7.ResumeLayout(false);
+            this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -711,5 +752,8 @@
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button ButtonStartTraining;
         private System.Windows.Forms.Button ButtonPlayBest;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private System.Windows.Forms.Label LabelBestFitness;
+        private System.Windows.Forms.Label BestFitness;
     }
 }
