@@ -79,6 +79,7 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.InstanceList = new System.Windows.Forms.ComboBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.ButtonPlayBest = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxInputs)).BeginInit();
@@ -578,7 +579,7 @@
             this.groupBox6.Controls.Add(this.checkBoxShowUI);
             this.groupBox6.Location = new System.Drawing.Point(574, 62);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(144, 335);
+            this.groupBox6.Size = new System.Drawing.Size(144, 306);
             this.groupBox6.TabIndex = 10;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Options";
@@ -613,11 +614,22 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Instance";
             // 
+            // ButtonPlayBest
+            // 
+            this.ButtonPlayBest.Location = new System.Drawing.Point(573, 374);
+            this.ButtonPlayBest.Name = "ButtonPlayBest";
+            this.ButtonPlayBest.Size = new System.Drawing.Size(145, 23);
+            this.ButtonPlayBest.TabIndex = 1;
+            this.ButtonPlayBest.Text = "Play Best";
+            this.ButtonPlayBest.UseVisualStyleBackColor = true;
+            this.ButtonPlayBest.Click += new System.EventHandler(this.ButtonPlayBest_Click);
+            // 
             // SMBNeatUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(731, 405);
+            this.Controls.Add(this.ButtonPlayBest);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
@@ -698,5 +710,6 @@
         private System.Windows.Forms.ComboBox InstanceList;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button ButtonStartTraining;
+        private System.Windows.Forms.Button ButtonPlayBest;
     }
 }

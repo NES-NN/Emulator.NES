@@ -16,6 +16,10 @@ namespace dotNES.Neat
     {
         private SMBNeatUI _ui;
 
+        public SMBExperiment()
+        {
+        }
+
         /// <summary>
         /// Creates a SMB Experiment with an embededded NES Controller.
         /// </summary>

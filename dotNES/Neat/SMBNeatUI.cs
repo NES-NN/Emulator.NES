@@ -3,15 +3,7 @@ using SharpNeat.EvolutionAlgorithms;
 using SharpNeat.Genomes.Neat;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -257,5 +249,85 @@ namespace dotNES.Neat
             doc.Save("smb_champion.xml");
         }
 
+        /// --Play Best 
+
+        private void ButtonPlayBest_Click(object sender, EventArgs e)
+        {
+            PlayBest();
+        }
+
+        private void PlayBest()
+        {
+            NeatGenome genome = null;
+            SMBExperiment _experiment = new SMBExperiment();
+
+            // Load config XML.
+            XmlDocument xmlConfig = new XmlDocument();
+            xmlConfig.Load("smb.config.xml");
+            _experiment.Initialize("Super Mario Bros", xmlConfig.DocumentElement);
+
+
+            // Have the user choose the genome XML file.
+            var dialog = new OpenFileDialog
+            {
+                DefaultExt = "xml",
+                FileName = "smb_champion"
+            };
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                // Try to load the genome from the XML document.
+                try
+                {
+                    using (XmlReader xr = XmlReader.Create(dialog.FileName))
+                        genome = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false)[0];
+                }
+                catch (Exception e1)
+                {
+                    MessageBox.Show("Error loading genome from file!\nLoading aborted.\n" + e1.Message);
+                    return;
+                }
+            }
+
+            // Get a genome decoder that can convert genomes to phenomes.
+            var genomeDecoder = _experiment.CreateGenomeDecoder();
+
+            // Decode the genome into a phenome (neural network).
+            var phenome = genomeDecoder.Decode(genome);
+
+
+            IController _controller = new NES001Controller();
+
+            SMBNeatInstance _SMBNeatInstance = new SMBNeatInstance(_controller);
+
+            // Set the NEAT player's brain to the newly loaded neural network.
+            SMBNeatPlayer _neatPlayer = new SMBNeatPlayer(phenome, ref _controller);
+
+
+            _SMBNeatInstance.LoadState_Manual(true, "emu.bin");
+
+            _SMBNeatInstance.SMB.UpdateStats();
+            WaitNSeconds(1);
+
+            while (_SMBNeatInstance.SMB.GameStats["lives"] >= 2)
+            {
+                WaitNSeconds(1);
+
+                _neatPlayer.MakeMove(_SMBNeatInstance.SMB.Inputs);
+                _SMBNeatInstance.SMB.UpdateStats();
+            }
+            _SMBNeatInstance.Stop();
+        }
+        
+        private void WaitNSeconds(double seconds)
+        {
+            if (seconds < 1) return;
+            DateTime _desired = DateTime.Now.AddSeconds(seconds);
+            while (DateTime.Now < _desired)
+            {
+                System.Threading.Thread.Sleep(1);
+                System.Windows.Forms.Application.DoEvents();
+            }
+        }
     }
 }

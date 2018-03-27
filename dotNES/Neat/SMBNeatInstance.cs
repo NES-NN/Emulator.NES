@@ -97,11 +97,11 @@ namespace dotNES.Neat
 
         public void LoadState_Manual(bool withUI, string fileName)
         {
-            IController c = new NES001Controller();
+            //IController c = new NES001Controller();
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             _emulator = (Emulator)formatter.Deserialize(stream);
-            _emulator.Controller = c; _controller = c;
+            _emulator.Controller = _controller; // = c; _controller = c;
             stream.Close();
             _savedState = _emulator;
             
@@ -120,6 +120,7 @@ namespace dotNES.Neat
 
         internal void Stop()
         {
+            _ui?.Close();
             _gameInstanceRunning = false;
             Thread.Sleep(1000);
             _gameThread?.Abort();
