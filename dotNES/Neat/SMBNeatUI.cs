@@ -11,7 +11,7 @@ namespace dotNES.Neat
 {
     partial class SMBNeatUI : Form
     {
-        private static int Instances = 3;
+        public static int Instances = 3;
         private SMBNeatInstance[] _smbNeatInstances = new SMBNeatInstance[Instances];
         private int _currentInstance = 0;
 
@@ -240,6 +240,8 @@ namespace dotNES.Neat
 
         public void StartTraining_Neat()
         {
+            ButtonStartTraining.Enabled = false;
+
             SMBExperiment experiment = new SMBExperiment(this);
 
             XmlDocument xmlConfig = new XmlDocument();
@@ -301,9 +303,7 @@ namespace dotNES.Neat
             // Decode the genome into a phenome (neural network).
             var phenome = genomeDecoder.Decode(_best);
 
-
             IController _controller = new NES001Controller();
-
             SMBNeatInstance _SMBNeatInstance = new SMBNeatInstance(_controller);
 
             // Set the NEAT player's brain to the newly loaded neural network.
