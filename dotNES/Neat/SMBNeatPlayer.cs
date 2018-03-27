@@ -46,10 +46,17 @@ namespace dotNES.Neat
             // Execute button presses!
             EvaluateOutputNode(_brain.OutputSignalArray[0], Keys.A);
             EvaluateOutputNode(_brain.OutputSignalArray[1], Keys.S);
-            EvaluateOutputNode(_brain.OutputSignalArray[2], Keys.Up);
-            EvaluateOutputNode(_brain.OutputSignalArray[3], Keys.Down);
-            EvaluateOutputNode(_brain.OutputSignalArray[4], Keys.Left);
-            EvaluateOutputNode(_brain.OutputSignalArray[5], Keys.Right);
+
+            //Quick fix to stop invalid button presses. 
+            if (_brain.OutputSignalArray[2] > _brain.OutputSignalArray[3])
+                EvaluateOutputNode(_brain.OutputSignalArray[2], Keys.Up);
+            else
+                EvaluateOutputNode(_brain.OutputSignalArray[3], Keys.Down);
+
+            if (_brain.OutputSignalArray[4] > _brain.OutputSignalArray[5])
+                EvaluateOutputNode(_brain.OutputSignalArray[4], Keys.Left);
+            else
+                EvaluateOutputNode(_brain.OutputSignalArray[5], Keys.Right);
         }
 
         /// <summary>
