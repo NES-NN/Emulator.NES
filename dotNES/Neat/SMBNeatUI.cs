@@ -54,6 +54,15 @@ namespace dotNES.Neat
                 InstanceList.Items.Add(i);
             }
             InstanceList.SelectedIndex = _currentInstance;
+            loadBest();
+        }
+
+        public bool isActive(int index)
+        {
+            if (_smbNeatInstances[index] == null)
+                return false;
+            else
+                return true;
         }
 
         private void SMBNeat_Load(object sender, EventArgs e)
@@ -270,6 +279,13 @@ namespace dotNES.Neat
 
         private NeatGenome _best = null;
 
+        private void loadBest()
+        {
+            if (_best == null)
+                using (XmlReader xr = XmlReader.Create("smb_champion.xml"))
+                    _best = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false)[0];
+
+        }
         private void PlayBest()
         {
             SMBExperiment _experiment = new SMBExperiment();
@@ -278,10 +294,6 @@ namespace dotNES.Neat
             XmlDocument xmlConfig = new XmlDocument();
             xmlConfig.Load("smb.config.xml");
             _experiment.Initialize("Super Mario Bros", xmlConfig.DocumentElement);
-
-            if(_best == null)
-                using (XmlReader xr = XmlReader.Create("smb_champion.xml"))
-                    _best = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false)[0];
 
             // Get a genome decoder that can convert genomes to phenomes.
             var genomeDecoder = _experiment.CreateGenomeDecoder();

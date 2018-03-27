@@ -63,7 +63,13 @@ namespace dotNES.Neat
             _SMBNeatInstance.LoadState_Manual(false, "emu.bin");
 
             //Send back SMBNeatInstance to the UI so you know what the hell is going on. 
-            _ui.Invoke(new Action(() => _ui.UpdateInstance(displayID, ref _SMBNeatInstance)));
+            _ui.Invoke(new Action(() => {
+                while (_ui.isActive(displayID))
+                {
+                    WaitNSeconds(1);
+                }
+                _ui.UpdateInstance(displayID, ref _SMBNeatInstance);
+            }));
 
             _SMBNeatInstance.SMB.UpdateStats();
             WaitNSeconds(1);
@@ -110,6 +116,8 @@ namespace dotNES.Neat
 
             _SMBNeatInstance.Stop();
             _SMBNeatInstance = null;
+
+            _ui.UpdateInstance(displayID, ref _SMBNeatInstance);
 
             _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + "] Finished Evaluation - fitness : " + fitness + "\n");
             // Return the fitness score
