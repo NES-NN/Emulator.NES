@@ -244,21 +244,20 @@ namespace dotNES.Neat
 
         private void ea_UpdateEvent(object sender, EventArgs e)
         {
-
             Log(string.Format("gen={0:N0} bestFitness={1:N6}", _ea.CurrentGeneration, _ea.Statistics._maxFitness) + "\n");
 
-            Invoke(new Action(() => { UpdateBestFitness(_ea.Statistics._maxFitness);}));
+            Invoke(new Action(() => { UpdateBestFitness(_ea.CurrentChampGenome);}));
 
             var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { _ea.CurrentChampGenome }, false);
             doc.Save("smb_champion.xml");
         }
 
-        private void UpdateBestFitness (double newFitness)
+        private void UpdateBestFitness (NeatGenome genChamp)
         {
-            if(newFitness > _bestFitness)
+            if(genChamp.EvaluationInfo.Fitness > _best.EvaluationInfo.Fitness)
             {
-                _bestFitness = newFitness;
-                BestFitness.Text = Convert.ToString(_bestFitness);
+                _best = genChamp;
+                BestFitness.Text = Convert.ToString(genChamp.EvaluationInfo.Fitness);
             }
         }
 
@@ -269,9 +268,10 @@ namespace dotNES.Neat
             PlayBest();
         }
 
+        private NeatGenome _best = null;
+
         private void PlayBest()
         {
-            NeatGenome genome = null;
             SMBExperiment _experiment = new SMBExperiment();
 
             // Load config XML.
@@ -279,34 +279,15 @@ namespace dotNES.Neat
             xmlConfig.Load("smb.config.xml");
             _experiment.Initialize("Super Mario Bros", xmlConfig.DocumentElement);
 
-
-            // Have the user choose the genome XML file.
-            var dialog = new OpenFileDialog
-            {
-                DefaultExt = "xml",
-                FileName = "smb_champion"
-            };
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                // Try to load the genome from the XML document.
-                try
-                {
-                    using (XmlReader xr = XmlReader.Create(dialog.FileName))
-                        genome = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false)[0];
-                }
-                catch (Exception e1)
-                {
-                    MessageBox.Show("Error loading genome from file!\nLoading aborted.\n" + e1.Message);
-                    return;
-                }
-            }
+            if(_best == null)
+                using (XmlReader xr = XmlReader.Create("smb_champion.xml"))
+                    _best = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false)[0];
 
             // Get a genome decoder that can convert genomes to phenomes.
             var genomeDecoder = _experiment.CreateGenomeDecoder();
 
             // Decode the genome into a phenome (neural network).
-            var phenome = genomeDecoder.Decode(genome);
+            var phenome = genomeDecoder.Decode(_best);
 
 
             IController _controller = new NES001Controller();
