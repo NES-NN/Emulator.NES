@@ -11,7 +11,7 @@ namespace dotNES.Neat
 {
     partial class SMBNeatUI : Form
     {
-        private static int Instances = 2;
+        private static int Instances = 3;
         private SMBNeatInstance[] _smbNeatInstances = new SMBNeatInstance[Instances];
         private int _currentInstance = 0;
 

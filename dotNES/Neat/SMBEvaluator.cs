@@ -53,7 +53,7 @@ namespace dotNES.Neat
         public FitnessInfo Evaluate(IBlackBox box)
         {
             int thisCount = count++;
-            int displayID = thisCount % 2;
+            int displayID = thisCount % SMBNeatUI.Instances;
 
             _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + " Display "+ displayID + "] Starting  Evaluation\n");
             
