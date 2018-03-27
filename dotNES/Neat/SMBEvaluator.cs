@@ -17,7 +17,7 @@ namespace dotNES.Neat
         private ulong _evalCount;
         private bool _stopConditionSatisfied;
         private SMBNeatUI _ui;
-        int count = 1;
+        int count = 0;
 
         /// <summary>
         /// Creates a SMB evaluator with an embedded NES controller.
@@ -55,10 +55,9 @@ namespace dotNES.Neat
             int thisCount = count++;
             int displayID = thisCount % SMBNeatUI.Instances;
 
-            _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + " Display "+ displayID + "] Starting  Evaluation\n");
+            _ui.Log("[Generation " + thisCount / 25 + " Genome " + thisCount % 25 + " Display "+ displayID + "] Starting  Evaluation\n");
             
-            IController _controller = new NES001Controller(); ;
-            SMBNeatInstance _SMBNeatInstance = new SMBNeatInstance(_controller);
+            SMBNeatInstance _SMBNeatInstance = new SMBNeatInstance(new NES001Controller());
 
             _SMBNeatInstance.LoadState_Manual(false, "emu.bin");
 
@@ -66,16 +65,17 @@ namespace dotNES.Neat
             _ui.Invoke(new Action(() => {
                 while (_ui.isActive(displayID))
                 {
-                    WaitNSeconds(1);
+                    WaitNMilliseconds(100);
                 }
                 _ui.UpdateInstance(displayID, ref _SMBNeatInstance);
             }));
 
             _SMBNeatInstance.SMB.UpdateStats();
-            WaitNSeconds(1);
+            WaitNMilliseconds(500);
 
-            // The amount of frames that can pass with Mario not making progress
-            int errorAllowance = 5;
+            // The amount of seconds that can pass with Mario not making progress
+            // in quarter second incroments ie. 3 seconds = 12
+            int idelTime = 12;
 
             SMBNeatPlayer neatPlayer = new SMBNeatPlayer(box, ref _SMBNeatInstance._controller);
 
@@ -86,19 +86,16 @@ namespace dotNES.Neat
             double fitness = 0;
 
 
-            while (_SMBNeatInstance.SMB.GameStats["lives"] >= 2 && errorAllowance >= 0)
+            while (_SMBNeatInstance.SMB.GameStats["lives"] >= 2 && idelTime >= 0)
             {
-                WaitNSeconds(1); 
+                WaitNMilliseconds(250);
 
                 neatPlayer.MakeMove(_SMBNeatInstance.SMB.Inputs);
                 _SMBNeatInstance.SMB.UpdateStats();
                 
-
-                //Console.WriteLine("levelX : " + levelX + " SMBNeatInstance.SMB.PlayerStats[\"x\"] : " + SMBNeatInstance.SMB.PlayerStats["x"]);
-                
                 // Check whether Mario is advancing
                 if (levelX >= _SMBNeatInstance.SMB.PlayerStats["x"])
-                    errorAllowance--;
+                    idelTime--;
 
                 levelX = _SMBNeatInstance.SMB.PlayerStats["x"];
                 if (levelX > fitness)
@@ -110,7 +107,7 @@ namespace dotNES.Neat
             _evalCount++;
 
             // Ensure controller gets paused
-            neatPlayer.ReleaseAllKeys();
+            //neatPlayer.ReleaseAllKeys();
 
             fitness = (fitness+(double)_SMBNeatInstance.SMB.GameStats["score"])/(double)(_SMBNeatInstance.SMB.GameStats["time"]+1);
 
@@ -119,17 +116,17 @@ namespace dotNES.Neat
 
             _ui.UpdateInstance(displayID, ref _SMBNeatInstance);
 
-            _ui.Log("[Generation " + thisCount / 10 + " Genome " + thisCount % 10 + "] Finished Evaluation - fitness : " + fitness + "\n");
+            _ui.Log("[Generation " + thisCount / 25 + " Genome " + thisCount % 25 + " Display " + displayID + "] Finished Evaluation - fitness : " + fitness + "\n");
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);
         }
 
 
 
-        private void WaitNSeconds(double seconds)
+        private void WaitNMilliseconds(double Milliseconds)
         {
-            if (seconds < 1) return;
-            DateTime _desired = DateTime.Now.AddSeconds(seconds);
+            if (Milliseconds < 1) return;
+            DateTime _desired = DateTime.Now.AddMilliseconds(Milliseconds);
             while (DateTime.Now < _desired)
             {
                 Thread.Sleep(1);

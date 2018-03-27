@@ -152,7 +152,7 @@ namespace dotNES
             _renderThread = new Thread(() =>
             {
                 gameStarted = true;
-                Console.WriteLine(emu.Cartridge);
+                //Console.WriteLine(emu.Cartridge);
                 Stopwatch s = new Stopwatch();
                 Stopwatch s0 = new Stopwatch();
                 while (_rendererRunning)
@@ -174,7 +174,7 @@ namespace dotNES
                         Thread.Sleep(Math.Max((int)(980 / 60.0 - s0.ElapsedMilliseconds), 0) / activeSpeed);
                     }
                     s.Stop();
-                    //Console.WriteLine($"60 frames in {s.ElapsedMilliseconds}ms");
+                    Console.WriteLine($"60 frames in {s.ElapsedMilliseconds}ms");
                 }
             });
             _renderThread.Start();

@@ -11,15 +11,13 @@ namespace dotNES.Neat
 {
     partial class SMBNeatUI : Form
     {
-        public static int Instances = 3;
+        public static int Instances = 1;    
         private SMBNeatInstance[] _smbNeatInstances = new SMBNeatInstance[Instances];
         private int _currentInstance = 0;
 
         private static int refreshTime = 16;
         private string _rom;
-
-        private double _bestFitness = 0;
-
+        
         private Dictionary<int, String>
             playerState = new Dictionary<int, String>()
             {
@@ -79,6 +77,7 @@ namespace dotNES.Neat
             {
                 _smbNeatInstances[_currentInstance].GameInstanceRunning = false;
             }
+            _ea?.Stop();
         }
 
         private void refresh_Tick(object sender, EventArgs e)
@@ -265,11 +264,12 @@ namespace dotNES.Neat
 
         private void UpdateBestFitness (NeatGenome genChamp)
         {
-            if(genChamp.EvaluationInfo.Fitness > _best.EvaluationInfo.Fitness)
+            if (genChamp.EvaluationInfo.Fitness > _best.EvaluationInfo.Fitness)
             {
                 _best = genChamp;
                 BestFitness.Text = Convert.ToString(genChamp.EvaluationInfo.Fitness);
             }
+
         }
 
         /// --Play Best 
@@ -283,9 +283,16 @@ namespace dotNES.Neat
 
         private void loadBest()
         {
-            if (_best == null)
-                using (XmlReader xr = XmlReader.Create("smb_champion.xml"))
-                    _best = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false)[0];
+            try
+            {
+                if (_best == null)
+                    using (XmlReader xr = XmlReader.Create("smb_champion.xml"))
+                        _best = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false)[0];
+            }
+            catch (Exception ex)
+            {
+                ButtonPlayBest.Enabled = false;
+            }
 
         }
         private void PlayBest()
@@ -315,11 +322,11 @@ namespace dotNES.Neat
             _SMBNeatInstance.LoadState_Manual(true, "emu.bin");
 
             _SMBNeatInstance.SMB.UpdateStats();
-            WaitNSeconds(1);
+            WaitNMilliseconds(500);
 
             while (_SMBNeatInstance.SMB.GameStats["lives"] >= 2 && _SMBNeatInstance._ui.Visible)
             {
-                WaitNSeconds(1);
+                WaitNMilliseconds(250);
 
                 _neatPlayer.MakeMove(_SMBNeatInstance.SMB.Inputs);
                 _SMBNeatInstance.SMB.UpdateStats();
@@ -327,11 +334,11 @@ namespace dotNES.Neat
             _SMBNeatInstance.Stop();
             ButtonPlayBest.Enabled = true;
         }
-        
-        private void WaitNSeconds(double seconds)
+
+        private void WaitNMilliseconds(double Milliseconds)
         {
-            if (seconds < 1) return;
-            DateTime _desired = DateTime.Now.AddSeconds(seconds);
+            if (Milliseconds < 1) return;
+            DateTime _desired = DateTime.Now.AddMilliseconds(Milliseconds);
             while (DateTime.Now < _desired)
             {
                 System.Threading.Thread.Sleep(1);

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using dotNES.Controllers;
 using SharpNeat.EvolutionAlgorithms;
 using SharpNeat.Genomes.Neat;
+using System.Diagnostics;
 
 namespace dotNES.Neat
 {
@@ -20,6 +21,7 @@ namespace dotNES.Neat
         public UI _ui;
         private Thread _gameThread;
         private string _stateFileName = "emu.bin";
+        private int activeSpeed = 1;
 
         public SMB SMB
         {
@@ -147,6 +149,9 @@ namespace dotNES.Neat
                 _gameThread = new Thread(() =>
                 {
                     _gameInstanceRunning = true;
+
+                    Stopwatch s = new Stopwatch();
+                    Stopwatch s0 = new Stopwatch();
                     while (_gameInstanceRunning)
                     {
                         if (_suspended)
@@ -154,7 +159,16 @@ namespace dotNES.Neat
                             Thread.Sleep(100);
                             continue;
                         }
-                        _emulator.PPU.ProcessFrame();
+                        s.Restart();
+                        for (int i = 0; i < 60 && !_suspended; i++)
+                        {
+                            s0.Restart();
+                            _emulator.PPU.ProcessFrame();
+                            s0.Stop();
+                            Thread.Sleep(Math.Max((int)(980 / 60.0 - s0.ElapsedMilliseconds), 0) / activeSpeed);
+                        }
+                        s.Stop();
+                        Console.WriteLine($"60 frames in {s.ElapsedMilliseconds}ms");
                     }
                 });
                 _gameThread.Start();
