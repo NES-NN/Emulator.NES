@@ -82,9 +82,8 @@ namespace dotNES.Neat
 
         private void refresh_Tick(object sender, EventArgs e)
         {
-            if (_smbNeatInstances[_currentInstance] != null)
-                if (_smbNeatInstances[_currentInstance].GameInstanceRunning)
-                    RefreshGameUIStats();
+            if (_smbNeatInstances[_currentInstance] != null && _smbNeatInstances[_currentInstance].GameInstanceRunning)
+                RefreshGameUIStats();
         }
 
         private void RefreshGameUIStats()
@@ -270,6 +269,8 @@ namespace dotNES.Neat
                 {
                     _best = genChamp;
                     BestFitness.Text = Convert.ToString(genChamp.EvaluationInfo.Fitness);
+                    var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { _best }, false);
+                    doc.Save("best.xml");
                 }
             }
             else
@@ -277,7 +278,6 @@ namespace dotNES.Neat
                 _best = genChamp;
                 ButtonPlayBest.Enabled = true;
             }
-
         }
 
         /// --Play Best 
@@ -294,8 +294,11 @@ namespace dotNES.Neat
             try
             {
                 if (_best == null)
-                    using (XmlReader xr = XmlReader.Create("smb_champion.xml"))
+                {
+                    using (XmlReader xr = XmlReader.Create("best.xml"))
                         _best = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false)[0];
+                    BestFitness.Text = Convert.ToString(_best.EvaluationInfo.Fitness);
+                }
             }
             catch (Exception ex)
             {
