@@ -290,6 +290,8 @@ namespace dotNES.Neat
         }
         private void PlayBest()
         {
+            ButtonPlayBest.Enabled = false;
+
             SMBExperiment _experiment = new SMBExperiment();
 
             // Load config XML.
@@ -315,7 +317,7 @@ namespace dotNES.Neat
             _SMBNeatInstance.SMB.UpdateStats();
             WaitNSeconds(1);
 
-            while (_SMBNeatInstance.SMB.GameStats["lives"] >= 2)
+            while (_SMBNeatInstance.SMB.GameStats["lives"] >= 2 && _SMBNeatInstance._ui.Visible)
             {
                 WaitNSeconds(1);
 
@@ -323,6 +325,7 @@ namespace dotNES.Neat
                 _SMBNeatInstance.SMB.UpdateStats();
             }
             _SMBNeatInstance.Stop();
+            ButtonPlayBest.Enabled = true;
         }
         
         private void WaitNSeconds(double seconds)
