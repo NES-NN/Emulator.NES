@@ -18,11 +18,11 @@ namespace SMBNeat
     {
         private ulong _evalCount;
         private bool _stopConditionSatisfied;
-        private Emulator _emulator;
+        private string _stateFile;
 
         public SMBEvaluator(string stateFile)
         {
-            _emulator = LoadState(stateFile);
+            _stateFile = stateFile;
         }
 
         #region IPhenomeEvaluator<IBlackBox> Members
@@ -51,13 +51,13 @@ namespace SMBNeat
         public FitnessInfo Evaluate(IBlackBox box)
         {
             // The amount of seconds that can pass with Mario not making progress in Seconds
-            int idelTime = 6;
+            int idelTime = 3;
 
             //How many frames the NN should wait before making another move (Game runs at 60 frames/second)
             int playerSpeed = 30;
 
             //Create a fresh clone of the state
-            Emulator emu = (Emulator)_emulator.Clone();
+            Emulator emu = LoadState(_stateFile);
 
             //Create a new controller for the Emulator
             emu.Controller = new NES001Controller(); ;
@@ -95,7 +95,6 @@ namespace SMBNeat
 
                         //Update marios X progress
                         levelX  = mapper.PlayerStats["x"];
-                        Console.WriteLine(emu.CPU.AddressRead(0x03AD));
                     }
                 }
             }
@@ -105,6 +104,11 @@ namespace SMBNeat
 
             //get the fitness score of the run
             fitness = CalculateFinalFitness(mapper);
+
+            //Usefull debugging info
+            Console.WriteLine(_evalCount + " fitness: " + fitness);
+
+            mapper = null;
             
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);
@@ -113,7 +117,7 @@ namespace SMBNeat
         private double CalculateFinalFitness(SMBMapper mapper)
         {
             //Add game score and x progress then devide by time to get fitness. the +1 is to avoid a devide by zero exception.
-            return (double)(mapper.PlayerStats["x"] - 40 + mapper.GameStats["score"]) / (double)(mapper.GameStats["time"] + 1);
+            return (double)(mapper.PlayerStats["x"] + mapper.GameStats["score"]) / (double)(mapper.GameStats["time"] + 1);
         }
 
         /// <summary>
