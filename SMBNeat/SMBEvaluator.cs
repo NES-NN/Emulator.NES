@@ -50,6 +50,9 @@ namespace SMBNeat
         /// </summary>
         public FitnessInfo Evaluate(IBlackBox box)
         {
+            //Hold max values for fitness eval.
+            int X = 0, S = 0, T = 400;
+
             // The amount of seconds that can pass with Mario not making progress in Seconds
             int idelTime = 3;
 
@@ -95,6 +98,13 @@ namespace SMBNeat
 
                         //Update marios X progress
                         levelX  = mapper.PlayerStats["x"];
+
+                        //Update fitness eval vars
+                        X = Math.Max(X, mapper.PlayerStats["x"]);
+                        S = Math.Max(S, mapper.GameStats["score"]);
+                        T = Math.Min(T, mapper.GameStats["time"]);
+
+                        //Console.Write(levelX + ", ");
                     }
                 }
             }
@@ -103,18 +113,20 @@ namespace SMBNeat
             _evalCount++;
 
             //get the fitness score of the run
-            fitness = CalculateFinalFitness(mapper);
+            fitness = CalculateFinalFitness(X, S, T);
 
             mapper = null;
+
+            //Console.Write("fitness : " + fitness + "\n");
             
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);
         }
 
-        private double CalculateFinalFitness(SMBMapper mapper)
+        private double CalculateFinalFitness(int X, int S, int T)
         {
             //Add game score and x progress then devide by time to get fitness. the +1 is to avoid a devide by zero exception.
-            return (double)(mapper.PlayerStats["x"] + mapper.GameStats["score"]) / (double)(mapper.GameStats["time"] + 1);
+            return (double)(X + S) / (double)(T + 1);
         }
 
         /// <summary>
