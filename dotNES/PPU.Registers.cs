@@ -4,6 +4,7 @@ namespace dotNES
 {
     partial class PPU
     {
+        [Serializable]
         public class PPUFlags
         {
             /* PPUCTRL register */

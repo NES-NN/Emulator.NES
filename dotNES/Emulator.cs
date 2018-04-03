@@ -8,7 +8,8 @@ using dotNES.Mappers;
 
 namespace dotNES
 {
-    class Emulator
+    [Serializable]
+    public class Emulator : ICloneable
     {
         private static readonly Dictionary<int, KeyValuePair<Type, MapperDef>> Mappers = (from type in Assembly.GetExecutingAssembly().GetTypes()
                                                                  let def = (MapperDef)type.GetCustomAttributes(typeof(MapperDef), true).FirstOrDefault()
@@ -59,6 +60,11 @@ namespace dotNES
             {
                 Mapper.Load(fs);
             }
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

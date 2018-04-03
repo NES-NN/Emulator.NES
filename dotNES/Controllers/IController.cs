@@ -2,7 +2,7 @@
 
 namespace dotNES.Controllers
 {
-    interface IController
+    public interface IController
     {
         void Strobe(bool on);
 
@@ -10,6 +10,10 @@ namespace dotNES.Controllers
 
         void PressKey(KeyEventArgs e);
 
+        void ManualPressKey(int key);
+
         void ReleaseKey(KeyEventArgs e);
+
+        void ManualReleaseKey(int key);
     }
 }

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Config>
+  <PopulationSize>25</PopulationSize>
+  <SpecieCount>5</SpecieCount>
+  <Activation>
+    <Scheme>FixedIters</Scheme>
+    <Iters>2</Iters>
+  </Activation>
+  <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
+  <ComplexityThreshold>528</ComplexityThreshold>
+  <Description>
+  </Description>
+  <MaxDegreeOfParallelism>1</MaxDegreeOfParallelism>
+</Config>

@@ -3,8 +3,10 @@ using static dotNES.CPU.AddressingMode;
 
 namespace dotNES
 {
+    [Serializable]
     sealed partial class CPU
     {
+        [Serializable]
         [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
         public class OpcodeDef : Attribute
         {

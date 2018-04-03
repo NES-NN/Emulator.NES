@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace dotNES.Controllers
 {
-    class NES001Controller : IController
+    public class NES001Controller : IController
     {
         private int data;
         private int serialData;
@@ -50,10 +50,20 @@ namespace dotNES.Controllers
             data |= 1 << _keyMapping[e.KeyCode];
         }
 
+        public void ManualPressKey(int key)
+        {
+            data |= 1 << key;
+        }
+
         public void ReleaseKey(KeyEventArgs e)
         {
             if (!_keyMapping.ContainsKey(e.KeyCode)) return;
             data &= ~(1 << _keyMapping[e.KeyCode]);
+        }
+
+        public void ManualReleaseKey(int key)
+        {
+            data &= ~(1 << key);
         }
     }
 }

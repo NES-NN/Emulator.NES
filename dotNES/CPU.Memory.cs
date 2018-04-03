@@ -5,7 +5,7 @@ using static dotNES.CPU.AddressingMode;
 
 namespace dotNES
 {
-    sealed partial class CPU
+    sealed public partial class CPU
     {
         public enum AddressingMode
         {
@@ -67,6 +67,11 @@ namespace dotNES
             if (_opcodeDefs[_currentInstruction].Mode == Direct) return _rmwValue = A;
             if (_currentMemoryAddress == null) _currentMemoryAddress = _Address();
             return _rmwValue = ReadByte((uint)_currentMemoryAddress) & 0xFF;
+        }
+
+        public uint AddressRead(uint addr)
+        {
+            return _rmwValue = ReadByte(addr) & 0xFF;
         }
 
         public void AddressWrite(uint val)

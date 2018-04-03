@@ -1,6 +1,9 @@
-﻿namespace dotNES
+﻿using System;
+
+namespace dotNES
 {
-    sealed partial class PPU : Addressable
+    [Serializable]
+    sealed public partial class PPU : Addressable
     {   
         public PPU(Emulator emulator) : base(emulator, 0x3FFF)
         {

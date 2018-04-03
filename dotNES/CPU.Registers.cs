@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace dotNES
 {
@@ -12,6 +13,7 @@ namespace dotNES
         private const int OverflowBit = 0x40;
         private const int NegativeBit = 0x80;
 
+        [Serializable]
         public class CPUFlags
         {
             public bool Negative;

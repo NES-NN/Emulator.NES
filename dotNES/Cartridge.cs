@@ -2,7 +2,8 @@
 
 namespace dotNES
 {
-    class Cartridge
+    [Serializable]
+    public class Cartridge
     {
         public readonly byte[] Raw;
         public readonly int PRGROMSize;

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Windows.Forms;
 using dotNES.Controllers;
@@ -253,6 +256,20 @@ namespace dotNES
                                 y.Click += delegate { activeSpeed = speed; };
                             }));
                     }),
+                    new Item("Save State", x =>
+                    {
+                        x.Click += delegate
+                        {
+                            SaveStateToSelectedFile();
+                        };
+                    }),
+                    new Item("Load State", x =>
+                    {
+                        x.Click += delegate
+                        {
+                            LoadStateFromSelectedFile();
+                        };
+                    }),
                     new Item("&Reset..."),
                 }
             };
@@ -287,5 +304,55 @@ namespace dotNES
         {
             e.IsInputKey = true;
         }
+        // --- State Management
+
+        private void LoadState(String fileName)
+        {
+            IController c = new NES001Controller();
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            emu = (Emulator)formatter.Deserialize(stream);
+            emu.Controller = c; this._controller = c;
+            stream.Close();
+        }
+
+        private void LoadStateFromSelectedFile()
+        {
+            suspended = true;
+            var dialog = new OpenFileDialog
+            {
+                DefaultExt = "bin",
+                FileName = "emu"
+            };
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                LoadState(dialog.FileName);
+            }
+            suspended = false;
+        }
+
+        private void SaveState(String fileName)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None);
+            formatter.Serialize(stream, emu);
+            stream.Close();
+        }
+
+        private void SaveStateToSelectedFile()
+        {
+            suspended = true;
+            var dialog = new SaveFileDialog
+            {
+                DefaultExt = "bin",
+                FileName = "emu"
+            };
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                SaveState(dialog.FileName);
+            }
+            suspended = false;
+        }
+
     }
 }
