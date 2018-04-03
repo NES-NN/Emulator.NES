@@ -10,5 +10,5 @@
   <ComplexityThreshold>528</ComplexityThreshold>
   <Description>
   </Description>
-  <MaxDegreeOfParallelism>1</MaxDegreeOfParallelism>
+  <MaxDegreeOfParallelism>4</MaxDegreeOfParallelism>
 </Config>

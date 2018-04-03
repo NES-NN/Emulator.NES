@@ -58,7 +58,7 @@ namespace SMBNeat
             if (_brain.OutputSignalArray[4] > _brain.OutputSignalArray[5])
                 _controller.ManualPressKey(1);
             else
-                _controller.ManualPressKey(1);
+                _controller.ManualPressKey(0);
         }
 
         /// <summary>

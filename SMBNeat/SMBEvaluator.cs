@@ -105,9 +105,6 @@ namespace SMBNeat
             //get the fitness score of the run
             fitness = CalculateFinalFitness(mapper);
 
-            //Usefull debugging info
-            Console.WriteLine(_evalCount + " fitness: " + fitness);
-
             mapper = null;
             
             // Return the fitness score
