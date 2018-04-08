@@ -484,6 +484,7 @@
             // 
             // ButtonStartRom
             // 
+            this.ButtonStartRom.Enabled = false;
             this.ButtonStartRom.Location = new System.Drawing.Point(232, 11);
             this.ButtonStartRom.Name = "ButtonStartRom";
             this.ButtonStartRom.Size = new System.Drawing.Size(75, 23);
@@ -494,6 +495,7 @@
             // 
             // ButtonLoadState
             // 
+            this.ButtonLoadState.Enabled = false;
             this.ButtonLoadState.Location = new System.Drawing.Point(313, 11);
             this.ButtonLoadState.Name = "ButtonLoadState";
             this.ButtonLoadState.Size = new System.Drawing.Size(75, 23);
@@ -525,6 +527,7 @@
             // 
             // ButtonLoadRom
             // 
+            this.ButtonLoadRom.Enabled = false;
             this.ButtonLoadRom.Location = new System.Drawing.Point(151, 11);
             this.ButtonLoadRom.Name = "ButtonLoadRom";
             this.ButtonLoadRom.Size = new System.Drawing.Size(75, 23);
@@ -560,6 +563,7 @@
             // 
             // ButtonSaveState
             // 
+            this.ButtonSaveState.Enabled = false;
             this.ButtonSaveState.Location = new System.Drawing.Point(394, 11);
             this.ButtonSaveState.Name = "ButtonSaveState";
             this.ButtonSaveState.Size = new System.Drawing.Size(75, 23);
@@ -640,7 +644,7 @@
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 1;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
             this.tableLayoutPanel4.Size = new System.Drawing.Size(148, 14);
             this.tableLayoutPanel4.TabIndex = 12;
             // 
