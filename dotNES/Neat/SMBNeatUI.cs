@@ -156,54 +156,53 @@ namespace dotNES.Neat
 
         private void ButtonLoadRom_Click(object sender, EventArgs e)
         {
-            var dialog = new OpenFileDialog
-            {
-                DefaultExt = "nes"
-            };
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                _rom = dialog.FileName;
-                labelRomName.Text = dialog.SafeFileName;
-                output.Text += "Loaded Rom : " + _rom + "\n";
-            }
+            //var dialog = new OpenFileDialog
+            //{
+            //    DefaultExt = "nes"
+            //};
+            //if (dialog.ShowDialog() == DialogResult.OK)
+            //{
+            //    _rom = dialog.FileName;
+            //    labelRomName.Text = dialog.SafeFileName;
+            //    output.Text += "Loaded Rom : " + _rom + "\n";
+            //}
         }
 
         private void ButtonStartRom_Click(object sender, EventArgs e)
         {
-            if (_smbNeatInstances[_currentInstance] != null)
-                if (_smbNeatInstances[_currentInstance].GameInstanceRunning)
-                {
-                    _smbNeatInstances[_currentInstance].Suspended = true;
-                    ButtonStartRom.Text = "Play";
-                }
-                else
-                {
-                    _smbNeatInstances[_currentInstance].Suspended = false;
-                    ButtonStartRom.Text = "Pause";
-                }
-            else
-            {
-                _smbNeatInstances[_currentInstance] = new SMBNeatInstance(checkBoxShowUI.Checked, _rom);
-                ButtonStartRom.Text = "Pause";
-            }
-            checkBoxShowUI.Enabled = false;
+            //if (_smbNeatInstances[_currentInstance] != null)
+            //    if (_smbNeatInstances[_currentInstance].GameInstanceRunning)
+            //    {
+            //        _smbNeatInstances[_currentInstance].Suspended = true;
+            //        ButtonStartRom.Text = "Play";
+            //    }
+            //    else
+            //    {
+            //        _smbNeatInstances[_currentInstance].Suspended = false;
+            //        ButtonStartRom.Text = "Pause";
+            //    }
+            //else
+            //{
+            //    _smbNeatInstances[_currentInstance] = new SMBNeatInstance(checkBoxShowUI.Checked, _rom);
+            //    ButtonStartRom.Text = "Pause";
+            //}
+            //checkBoxShowUI.Enabled = false;
         }
 
         private void ButtonSaveState_Click(object sender, EventArgs e)
         {
-            _smbNeatInstances[_currentInstance].SaveState();
+            //_smbNeatInstances[_currentInstance].SaveState();
         }
         
         private void ButtonLoadState_Click(object sender, EventArgs e)
         {
-            if (_smbNeatInstances[_currentInstance] == null)
-            {
-                _smbNeatInstances[_currentInstance] = new SMBNeatInstance(checkBoxShowUI.Checked, _rom);
-                ButtonStartRom.Text = "Pause";
-            }
-
-            _smbNeatInstances[_currentInstance].LoadState(checkBoxShowUI.Checked);
-            checkBoxShowUI.Enabled = false;
+            //if (_smbNeatInstances[_currentInstance] == null)
+            //{
+            //    _smbNeatInstances[_currentInstance] = new SMBNeatInstance(checkBoxShowUI.Checked, _rom);
+            //    ButtonStartRom.Text = "Pause";
+            //}
+            //_smbNeatInstances[_currentInstance].LoadState(checkBoxShowUI.Checked);
+            //checkBoxShowUI.Enabled = false;
         }
 
         public void Log(string text)
