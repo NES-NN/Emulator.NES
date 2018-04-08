@@ -33,6 +33,8 @@ namespace SMBNeat
             _ea = experiment.CreateEvolutionAlgorithm();
             _ea.UpdateEvent += new EventHandler(ea_UpdateEvent);
             _ea.StartContinue();
+
+            Console.ReadLine();
         }
 
         static void ea_UpdateEvent(object sender, EventArgs e)
