@@ -19,5 +19,5 @@ Then, to compile:
 ```
 $ nuget update -self
 $ nuget restore
-$ msbuild /property:Configuration=Release dotNES.sln
+$ msbuild /property:Configuration=Release NES-NN-Testbed.sln
 ```
