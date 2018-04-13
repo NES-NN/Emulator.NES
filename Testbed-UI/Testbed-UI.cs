@@ -21,5 +21,25 @@ namespace Testbed_UI
         {
             Application.Exit();
         }
+
+        private void playBestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PlayBestUI playBestUI = new PlayBestUI();
+
+            playBestUI.Show();
+        }
+
+        private void testConfigurationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Get windows to display what the NN is doing
+            PlayBestUI playBestUI = new PlayBestUI();
+            SMBStats sMBStats = new SMBStats();
+
+            //Adjust it name
+            playBestUI.Text = "Trainging - NN name here";
+
+            playBestUI.Show();
+            sMBStats.Show();
+        }
     }
 }

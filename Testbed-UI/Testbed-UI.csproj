@@ -50,6 +50,12 @@
     <Compile Include="PlayBestUI.Designer.cs">
       <DependentUpon>PlayBestUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="SMBStats.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SMBStats.Designer.cs">
+      <DependentUpon>SMBStats.cs</DependentUpon>
+    </Compile>
     <Compile Include="Testbed-UI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,6 +66,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="PlayBestUI.resx">
       <DependentUpon>PlayBestUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SMBStats.resx">
+      <DependentUpon>SMBStats.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Testbed-UI.resx">
       <DependentUpon>Testbed-UI.cs</DependentUpon>

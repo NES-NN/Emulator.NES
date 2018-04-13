@@ -197,7 +197,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(496, 641);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "PlayBestUI";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.Text = "Play Best";
             this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
