@@ -3,7 +3,7 @@
   <PopulationSize>25</PopulationSize>
   <SpecieCount>5</SpecieCount>
   <Activation>
-    <Scheme>FixedIters</Scheme>
+    <Scheme>CyclicFixedIters</Scheme>
     <Iters>2</Iters>
   </Activation>
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
