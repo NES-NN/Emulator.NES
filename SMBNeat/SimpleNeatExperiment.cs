@@ -98,7 +98,8 @@ namespace SMBNeat
         /// </summary>
         public List<NeatGenome> LoadPopulation(XmlReader xr)
         {
-            return NeatGenomeUtils.LoadPopulation(xr, false, this.InputCount, this.OutputCount);
+            NeatGenomeFactory genomeFactory = (NeatGenomeFactory)CreateGenomeFactory();
+            return NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false, genomeFactory);            
         }
 
         /// <summary>
