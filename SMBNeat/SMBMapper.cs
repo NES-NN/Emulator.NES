@@ -77,7 +77,7 @@ namespace SMBNeat
             playerStats["state"] = (int)_emulator.CPU.AddressRead(0x000E);
             playerStats["floatState"] = (int)_emulator.CPU.AddressRead(0x001D);
 
-            playerStats["powerUP"] = (int)_emulator.CPU.AddressRead(0x0756);
+            playerStats["powerUP"] = (int)_emulator.CPU.AddressRead(0x0756); //0=small, 1=Big, >2=Fiery
             playerStats["direction"] = (int)_emulator.CPU.AddressRead(0x0003);
         }
 
@@ -99,16 +99,16 @@ namespace SMBNeat
             for (int dy = -BoxRadius * 16; dy <= BoxRadius * 16; dy += 16)
                 for (int dx = -BoxRadius * 16; dx <= BoxRadius * 16; dx += 16)
                 {
-                    inputs[i] = 0;
+                    inputs[i] = 0; //empty space
 
                     if (getTile(dx, dy) == 1 && playerStats["y"] + dy < 0x1B0)
-                        inputs[i] = 1;
+                        inputs[i] = 1; //tile
 
                     for (int j = e; j < 5; j++)
                         if (enemy[j, 0] - (playerStats["x"] + dx) <= 8 && enemy[j, 1] - (playerStats["y"] + dy) <= 8 &&
                             enemy[j, 0] != 0 && enemy[j, 1] != 0)
                         {
-                            inputs[i] = -1;
+                            inputs[i] = -1; //enemy
                             e++;
                         }
                     i++;
@@ -143,6 +143,7 @@ namespace SMBNeat
             int subx = (x % 256) / 16;
             int suby = (y - 32) / 16;
 
+            //0x0500-0x069F	Current tile 
             uint addr = Convert.ToUInt32(0x500 + page * 13 * 16 + suby * 16 + subx);
 
             if (suby >= 13 || suby < 0)
