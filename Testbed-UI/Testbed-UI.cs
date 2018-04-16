@@ -38,6 +38,7 @@ namespace Testbed_UI
             //Adjust it name
             playBestUI.Text = "Trainging - NN name here";
 
+
             playBestUI.Show();
             sMBStats.Show();
         }
