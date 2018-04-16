@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNES", "dotNES\dotNES.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMBNeat", "SMBNeat\SMBNeat.csproj", "{E0464734-A0DF-4A28-BC63-289FBFCEC2B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testbed-UI", "Testbed-UI\Testbed-UI.csproj", "{6FF61B08-4B33-43C8-B195-3621A97023E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{E0464734-A0DF-4A28-BC63-289FBFCEC2B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0464734-A0DF-4A28-BC63-289FBFCEC2B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0464734-A0DF-4A28-BC63-289FBFCEC2B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FF61B08-4B33-43C8-B195-3621A97023E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FF61B08-4B33-43C8-B195-3621A97023E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FF61B08-4B33-43C8-B195-3621A97023E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FF61B08-4B33-43C8-B195-3621A97023E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
