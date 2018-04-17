@@ -11,6 +11,7 @@ using dotNES;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using TestbedUtils;
 
 namespace SMBNeat
 {
@@ -66,13 +67,13 @@ namespace SMBNeat
             emu.Controller = new NES001Controller(); ;
 
             //Create a new SMB Mapper object for easy access to the NN inputs.
-            SMBMapper mapper = new SMBMapper(ref emu);
+            SMBMemoryMapper mapper = new SMBMemoryMapper(ref emu);
 
             //Create a new Neat Player
             SMBNeatPlayer neatPlayer = new SMBNeatPlayer(box, ref emu.Controller);
 
             // Until Mario becomes stuck or dies feed each input frame into the neural network and make a move!
-            int levelX = mapper.PlayerStats["x"];
+            int levelX = mapper.FetchPlayerStats()["x"];
 
             //Console.WriteLine("levelX : " + SMBNeatInstance.SMB.PlayerStats["x"]);
             double fitness = 0;
@@ -80,7 +81,7 @@ namespace SMBNeat
             //adjust idleTime into relevent frame count.
             idelTime = idelTime * (60 / playerSpeed);
             
-            while (mapper.GameStats["lives"] >= 2 && idelTime >= 0)
+            while (mapper.FetchGameStats()["lives"] >= 2 && idelTime >= 0)
             {
                 for (int i = 1; i <= 60; i++)
                 {
@@ -90,19 +91,19 @@ namespace SMBNeat
                     if (i % playerSpeed == 0)
                     {
                         //Evaluate inputs and make a moves
-                        neatPlayer.MakeMove(mapper.Inputs);
+                        neatPlayer.MakeMove(mapper.FetchInputs());
 
                         // Check whether Mario is advancing
-                        if (levelX >= mapper.PlayerStats["x"])
+                        if (levelX >= mapper.FetchPlayerStats()["x"])
                             idelTime--;
 
                         //Update marios X progress
-                        levelX  = mapper.PlayerStats["x"];
+                        levelX  = mapper.FetchPlayerStats()["x"];
 
                         //Update fitness eval vars
-                        X = Math.Max(X, mapper.PlayerStats["x"]);
-                        S = Math.Max(S, mapper.GameStats["score"]);
-                        T = Math.Min(T, mapper.GameStats["time"]);
+                        X = Math.Max(X, mapper.FetchPlayerStats()["x"]);
+                        S = Math.Max(S, mapper.FetchGameStats()["score"]);
+                        T = Math.Min(T, mapper.FetchGameStats()["time"]);
 
                         //Console.Write(levelX + ", ");
                     }
