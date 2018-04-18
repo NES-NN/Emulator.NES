@@ -40,7 +40,7 @@
       <HintPath>..\packages\Redzen.4.0.0\lib\netstandard2.0\Redzen.dll</HintPath>
     </Reference>
     <Reference Include="SharpNeatDomains">
-      <HintPath>..\..\sharpneat\src\SharpNeatDomains\bin\Debug\SharpNeatDomains.dll</HintPath>
+      <HintPath>lib\SharpNeatDomains.dll</HintPath>
     </Reference>
     <Reference Include="SharpNeatLib, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpNeatLib.2.4.0\lib\netstandard2.0\SharpNeatLib.dll</HintPath>
@@ -60,7 +60,6 @@
     <Compile Include="SimpleNeatExperiment.cs" />
     <Compile Include="SMBEvaluator.cs" />
     <Compile Include="SMBExperiment.cs" />
-    <Compile Include="SMBMapper.cs" />
     <Compile Include="SMBNeatPlayer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +72,10 @@
     <ProjectReference Include="..\dotNES\dotNES.csproj">
       <Project>{b468ed13-f98c-4adf-b3f9-f87396e17a51}</Project>
       <Name>dotNES</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestbedUtils\TestbedUtils.csproj">
+      <Project>{7b2bec18-52e5-48f1-a35a-1f245e2b6a33}</Project>
+      <Name>TestbedUtils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
