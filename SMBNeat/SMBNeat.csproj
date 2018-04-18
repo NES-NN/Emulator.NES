@@ -55,11 +55,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="ISMBNeatExperiment.cs" />
+    <Compile Include="SMBNeat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleNeatExperiment.cs" />
-    <Compile Include="SMBEvaluator.cs" />
-    <Compile Include="SMBExperiment.cs" />
+    <Compile Include="SMBEvolution\SimpleNeatExperiment.cs" />
+    <Compile Include="SMBEvolution\SMBEvaluator.cs" />
+    <Compile Include="SMBEvolution\SMBEvolution.cs" />
+    <Compile Include="SMBEvolution\SMBExperiment.cs" />
     <Compile Include="SMBNeatPlayer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,5 +88,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

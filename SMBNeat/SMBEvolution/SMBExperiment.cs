@@ -13,9 +13,9 @@ namespace SMBNeat
 {
     class SMBExperiment : SimpleNeatExperiment
     {
-        private string _state;
+        private string[] _state;
 
-        public SMBExperiment(string state)
+        public SMBExperiment(string[] state)
         {
             _state = state;
         }
