@@ -54,6 +54,13 @@ namespace TestbedUtils
             gameStats.Coins = AddressRead(0x075E);
             gameStats.World = AddressRead(0x075F) + 1;
             gameStats.Level = AddressRead(0x0760) + 1;
+
+            gameStats.PowerUpVisible = AddressRead(0x001B);
+            gameStats.PowerUPX1 = AddressRead(0x04C4);
+            gameStats.PowerUPX2 = AddressRead(0x04C6);
+            gameStats.PowerUPY1 = AddressRead(0x04C5);
+            gameStats.PowerUPY2 = AddressRead(0x04C7);
+
         }
 
         private void UpdateInputs()
@@ -71,6 +78,14 @@ namespace TestbedUtils
                     if (GetTile(dx, dy) == 1 && playerStats.PlayerY + dy < 0x1B0)
                     {
                         inputs[i] = 1; //tile
+                    }
+
+                    if (gameStats.PowerUpVisible != 0)
+                    {
+                        if (GetPowerUp(dx, dy) == 2)
+                        {
+                            inputs[i] = 2;
+                        }
                     }
 
                     for (int j = e; j < 5; j++)
@@ -132,6 +147,18 @@ namespace TestbedUtils
             }
         }
 
+        private int GetPowerUp(int dx, int dy)
+        {            
+            if ((gameStats.PowerUPX1 - playerStats.ScreenX < dx) && (gameStats.PowerUPX2 - playerStats.ScreenX > dx))            
+            {
+                if ((gameStats.PowerUPY1 - playerStats.ScreenY < dy + 24) && (gameStats.PowerUPY2 - playerStats.ScreenY > dy + 24))
+                {
+                    return 2;
+                }
+            }
+            return -2;
+        }
+
         private abstract class AbstractStats
         {
             protected Dictionary<String, int> keyValuePairs;
@@ -171,12 +198,20 @@ namespace TestbedUtils
             public int Level { get; set; } = 0;
             public int Time { get; set; } = 0;
 
+            public int PowerUpVisible { get; set; } = 0;
+            public int PowerUPX1 { get; set; } = 0;            
+            public int PowerUPX2 { get; set; } = 0;
+            public int PowerUPY1 { get; set; } = 0;
+            public int PowerUPY2 { get; set; } = 0;
+
             public override Dictionary<String, int> GetStats()
             {
                 keyValuePairs = new Dictionary<String, int>()
                 {
                     { "score", Score }, { "lives", Lives }, { "coins", Coins },
-                    { "world", World }, { "level", Level }, { "time", Time }
+                    { "world", World }, { "level", Level }, { "time", Time },
+                    {"PowerUpVisible", PowerUpVisible }, {"PowerUPX1",PowerUPX1},
+                    {"PowerUPX2",PowerUPX2 },{"PowerUPY1",PowerUPY1 },{"PowerUPY2",PowerUPY2 }
                 };
                 return keyValuePairs;
             }
