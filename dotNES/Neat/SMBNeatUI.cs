@@ -12,13 +12,15 @@ namespace dotNES.Neat
 {
     partial class SMBNeatUI : Form
     {
-        public static int Instances = 1;    
+        public static int Instances = 1;
         private SMBNeatInstance[] _smbNeatInstances = new SMBNeatInstance[Instances];
         private int _currentInstance = 0;
 
         private static int refreshTime = 16;
         private string _rom;
-        
+
+        SMBExperiment experiment = null;
+
         private Dictionary<int, String>
             playerState = new Dictionary<int, String>()
             {
@@ -31,10 +33,9 @@ namespace dotNES.Neat
                         { 0x06, "Player dies" },
                         { 0x07, "Entering area" },
                         { 0x08, "Normal" },
-                        { 0x09, "Cannot move" },
-                        { 0x0A, "Dying" },
-                        { 0x0B, "Palette cycling, can't move" },
-                        { 0x0C, "transission to Fiery" }
+                        { 0x09, "Cannot move" },                        
+                        { 0x0B, "Dying" },
+                        { 0x0C, "Palette cycling, can't move" }
             },
             playerFloatState = new Dictionary<int, String>()
             {
@@ -53,7 +54,6 @@ namespace dotNES.Neat
                 InstanceList.Items.Add(i);
             }
             InstanceList.SelectedIndex = _currentInstance;
-            loadBest();
         }
 
         public bool isActive(int index)
@@ -119,6 +119,7 @@ namespace dotNES.Neat
             powerUP.Text = (playerStats["powerUP"] == 0) ? "Small" :            //This memory address jumps around all over
                              (playerStats["powerUP"] == 1) ? "Big" : "Fiery";   //the place, this was the safest way to do it
 
+            powerUPLocation.Text =playerState["powerUPvisible"] == 0? "No powerup": $"{ gameStats["powerUPX1"]},{gameStats["powerUPY1"]},{gameStats["powerUPX2"]},{gameStats["powerUPY2"]}";
             direction.Text = (playerStats["direction"] == 1) ? "Right" :
                              (playerStats["direction"] == 2) ? "Left" : "";
 
@@ -139,6 +140,8 @@ namespace dotNES.Neat
                     m.DrawRectangle(gridPen, new Rectangle((i % 13) * 13, (i / 13) * 13, 13, 13));
                 if (inputs[i] == -1)
                     m.FillRectangle(Brushes.Green, new Rectangle((i % 13) * 13, (i / 13) * 13, 13, 13));
+                if (inputs[i] == 2)
+                    m.FillRectangle(Brushes.Gold, new Rectangle((i % 13) * 13, (i / 13) * 13, 13, 13));
             }
         }
 
@@ -149,7 +152,7 @@ namespace dotNES.Neat
             _currentInstance = Convert.ToInt32(InstanceList.GetItemText(InstanceList.SelectedItem));
         }
 
-        public void UpdateInstance (int index, ref SMBNeatInstance instance)
+        public void UpdateInstance(int index, ref SMBNeatInstance instance)
         {
             _smbNeatInstances[index] = instance;
         }
@@ -191,9 +194,9 @@ namespace dotNES.Neat
 
         private void ButtonSaveState_Click(object sender, EventArgs e)
         {
-            //_smbNeatInstances[_currentInstance].SaveState();
+            _smbNeatInstances[_currentInstance].SaveState();
         }
-        
+
         private void ButtonLoadState_Click(object sender, EventArgs e)
         {
             //if (_smbNeatInstances[_currentInstance] == null)
@@ -232,14 +235,14 @@ namespace dotNES.Neat
         public delegate IController GetControllerDelegate();
         public delegate SMB GetSMBDelegate();
         public delegate void ResetStateDelegate();
-        
+
         private NeatEvolutionAlgorithm<NeatGenome> _ea;
 
         public void StartTraining_Neat()
         {
             ButtonStartTraining.Enabled = false;
 
-            SMBExperiment experiment = new SMBExperiment(this);
+            experiment = new SMBExperiment(this);
 
             XmlDocument xmlConfig = new XmlDocument();
             xmlConfig.Load("smb.config.xml");
@@ -254,29 +257,29 @@ namespace dotNES.Neat
         {
             Log(string.Format("gen={0:N0} bestFitness={1:N6}", _ea.CurrentGeneration, _ea.Statistics._maxFitness) + "\n");
 
-            Invoke(new Action(() => { UpdateBestFitness(_ea.CurrentChampGenome);}));
+            Invoke(new Action(() => { UpdateBestFitness(_ea.CurrentChampGenome); }));
 
             var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { _ea.CurrentChampGenome }, false);
             doc.Save("smb_champion.xml");
         }
 
-        private void UpdateBestFitness (NeatGenome genChamp)
+        private void UpdateBestFitness(NeatGenome genChamp)
         {
             if (_best != null)
             {
                 if (genChamp.EvaluationInfo.Fitness > _best.EvaluationInfo.Fitness)
                 {
-                    _best = genChamp;
+                    Log($"New Best Fitness: {genChamp.EvaluationInfo.Fitness} > {_best.EvaluationInfo.Fitness}" + "\n");                    
                     BestFitness.Text = Convert.ToString(genChamp.EvaluationInfo.Fitness);
-                    var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { _best }, false);
-                    doc.Save("best.xml");
+                    
                 }
             }
             else
             {
-                _best = genChamp;
                 ButtonPlayBest.Enabled = true;
             }
+            var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { genChamp }, false);
+            doc.Save("best.xml");
         }
 
         /// --Play Best 
@@ -286,25 +289,30 @@ namespace dotNES.Neat
             PlayBest();
         }
 
-        private NeatGenome _best = null;
-
-        private void loadBest()
+        private NeatGenome _best
         {
-            try
+            get
             {
-                if (_best == null)
+                NeatGenome data;
+                try
                 {
                     using (XmlReader xr = XmlReader.Create("best.xml"))
-                        _best = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false)[0];
-                    BestFitness.Text = Convert.ToString(_best.EvaluationInfo.Fitness);
+                    {
+
+                        NeatGenomeFactory genomeFactory = (NeatGenomeFactory)experiment.CreateGenomeFactory();
+                        data = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false, genomeFactory)[0];
+                        BestFitness.Text = Convert.ToString(data.EvaluationInfo.Fitness);
+                    }
+                    return data;
+                }
+                catch
+                {
+                    ButtonPlayBest.Enabled = false;
+                    return null;
                 }
             }
-            catch (Exception ex)
-            {
-                ButtonPlayBest.Enabled = false;
-            }
+        } 
 
-        }
         private void PlayBest()
         {
             ButtonPlayBest.Enabled = false;
@@ -320,6 +328,7 @@ namespace dotNES.Neat
             var genomeDecoder = _experiment.CreateGenomeDecoder();
 
             // Decode the genome into a phenome (neural network).
+            if (_best == null) throw new Exception("Tried to load best failed!");
             var phenome = genomeDecoder.Decode(_best);
 
             IController _controller = new NES001Controller();
@@ -337,7 +346,7 @@ namespace dotNES.Neat
             while (_SMBNeatInstance.SMB.GameStats["lives"] >= 2 && _SMBNeatInstance._ui.Visible)
             {
                 WaitNMilliseconds(250);
-
+                
                 _neatPlayer.MakeMove(_SMBNeatInstance.SMB.Inputs);
                 _SMBNeatInstance.SMB.UpdateStats();
             }

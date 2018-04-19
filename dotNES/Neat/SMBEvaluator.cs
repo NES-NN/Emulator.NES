@@ -90,7 +90,7 @@ namespace dotNES.Neat
             {
                 WaitNMilliseconds(250);
 
-                neatPlayer.MakeMove(_SMBNeatInstance.SMB.Inputs);
+                neatPlayer.MakeMove(_SMBNeatInstance.SMB.Inputs);               
                 _SMBNeatInstance.SMB.UpdateStats();
                 
                 // Check whether Mario is advancing
@@ -109,16 +109,17 @@ namespace dotNES.Neat
             // Ensure controller gets paused
             //neatPlayer.ReleaseAllKeys();
 
-            fitness = (fitness+(double)_SMBNeatInstance.SMB.GameStats["score"])/(double)(_SMBNeatInstance.SMB.GameStats["time"]+1);
-
+            var endFitness = (fitness+(double)_SMBNeatInstance.SMB.GameStats["score"])/(double)(_SMBNeatInstance.SMB.GameStats["time"]+1);
+            //some bug in fitness (65535?)
+            if (endFitness > 170) endFitness = 0;
             _SMBNeatInstance.Stop();
             _SMBNeatInstance = null;
 
             _ui.UpdateInstance(displayID, ref _SMBNeatInstance);
 
-            _ui.Log("[Generation " + thisCount / 50 + " Genome " + thisCount % 50 + " Display " + displayID + "] Finished Evaluation - fitness : " + fitness + "\n");
+            _ui.Log("[Generation " + thisCount / 50 + " Genome " + thisCount % 50 + " Display " + displayID + "] Finished Evaluation - fitness : " + endFitness + "\n");
             // Return the fitness score
-            return new FitnessInfo(fitness, fitness);
+            return new FitnessInfo(endFitness, endFitness);
         }
 
 

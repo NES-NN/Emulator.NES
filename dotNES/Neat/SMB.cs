@@ -105,6 +105,12 @@ namespace dotNES.Neat
             gameStats["coins"] = (int)_emulator.CPU.AddressRead(0x075E);
             gameStats["world"] = (int)_emulator.CPU.AddressRead(0x075F) + 1;
             gameStats["level"] = (int)_emulator.CPU.AddressRead(0x0760) + 1;
+
+            gameStats["powerUPX1"] = (int)_emulator.CPU.AddressRead(0x04C4);
+            gameStats["powerUPY1"] = (int)_emulator.CPU.AddressRead(0x04C5);
+            gameStats["powerUPX2"] = (int)_emulator.CPU.AddressRead(0x04C6);
+            gameStats["powerUPY2"] = (int)_emulator.CPU.AddressRead(0x04C7);
+            gameStats["powerUPvisible"]= (int)_emulator.CPU.AddressRead(0x001B);
         }
 
         private void updateInputs()
@@ -119,6 +125,12 @@ namespace dotNES.Neat
                     if (getTile(dx, dy) == 1 && playerStats["y"] + dy < 0x1B0)
                         inputs[i] = 1;
 
+                    if (gameStats["powerUPvisible"]!= 0)
+                    {
+                        if (getPowerUp(dx, dy) == 2) { 
+                            inputs[i] =  2;
+                        }
+                    }
                     for (int j = e; j < 5; j++)
                         if (enemy[j, 0] - (playerStats["x"] + dx) <= 8 && enemy[j, 1] - (playerStats["y"] + dy) <= 8 &&
                             enemy[j, 0] != 0 && enemy[j, 1] != 0)
@@ -168,6 +180,22 @@ namespace dotNES.Neat
             else
                 return 0;
         }
+
+        private int getPowerUp(int dx, int dy)
+        {
+            //sortof realitive to screen:
+            if ((gameStats["powerUPX1"] - playerStats["screenX"] < dx ) && (gameStats["powerUPX2"] - playerStats["screenX"] > dx))
+            //    if ((gameStats["powerUPX1"] / 8 < dx) && (gameStats["powerUPX2"] / 8 > dx))
+            { 
+                if ((gameStats["powerUPY1"] - playerStats["screenY"] < dy + 24) && (gameStats["powerUPY2"] - playerStats["screenY"] > dy + 24))
+                {
+                    return 2;
+                }
+            }        
+            return -2;
+        }
+
+
 
         private int bcdToInt(uint startAddress, uint length)
         {

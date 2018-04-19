@@ -51,6 +51,7 @@
             this.direction = new System.Windows.Forms.Label();
             this.floatState = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.powerUPLocation = new System.Windows.Forms.Label();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.labelScore = new System.Windows.Forms.Label();
             this.labelLives = new System.Windows.Forms.Label();
@@ -331,6 +332,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.powerUPLocation);
             this.groupBox3.Controls.Add(this.tableLayoutPanel3);
             this.groupBox3.Location = new System.Drawing.Point(189, 3);
             this.groupBox3.Name = "groupBox3";
@@ -338,6 +340,15 @@
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Game Stats";
+            // 
+            // powerUPLocation
+            // 
+            this.powerUPLocation.AutoSize = true;
+            this.powerUPLocation.Location = new System.Drawing.Point(53, 159);
+            this.powerUPLocation.Name = "powerUPLocation";
+            this.powerUPLocation.Size = new System.Drawing.Size(35, 13);
+            this.powerUPLocation.TabIndex = 1;
+            this.powerUPLocation.Text = "label1";
             // 
             // tableLayoutPanel3
             // 
@@ -563,7 +574,6 @@
             // 
             // ButtonSaveState
             // 
-            this.ButtonSaveState.Enabled = false;
             this.ButtonSaveState.Location = new System.Drawing.Point(394, 11);
             this.ButtonSaveState.Name = "ButtonSaveState";
             this.ButtonSaveState.Size = new System.Drawing.Size(75, 23);
@@ -689,6 +699,7 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -759,5 +770,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.Label LabelBestFitness;
         private System.Windows.Forms.Label BestFitness;
+        private System.Windows.Forms.Label powerUPLocation;
     }
 }

@@ -125,7 +125,7 @@ namespace dotNES.Neat
             _ui?.Close();
             _gameInstanceRunning = false;
             Thread.Sleep(1000);
-            _gameThread?.Abort();
+            _gameThread?.Abort(); //This causes: Exception thrown: 'System.Threading.ThreadAbortException' in dotNES.exe
         }
 
         private void StartGameThread(bool withUI)
