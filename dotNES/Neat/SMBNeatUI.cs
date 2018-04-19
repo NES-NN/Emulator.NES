@@ -119,7 +119,7 @@ namespace dotNES.Neat
             powerUP.Text = (playerStats["powerUP"] == 0) ? "Small" :            //This memory address jumps around all over
                              (playerStats["powerUP"] == 1) ? "Big" : "Fiery";   //the place, this was the safest way to do it
 
-            powerUPLocation.Text =playerState["powerUPvisible"] == 0? "No powerup": $"{ gameStats["powerUPX1"]},{gameStats["powerUPY1"]},{gameStats["powerUPX2"]},{gameStats["powerUPY2"]}";
+            powerUPLocation.Text = gameStats["powerUPvisible"] == 0? "No powerup": $"{ gameStats["powerUPX1"]},{gameStats["powerUPY1"]},{gameStats["powerUPX2"]},{gameStats["powerUPY2"]}";
             direction.Text = (playerStats["direction"] == 1) ? "Right" :
                              (playerStats["direction"] == 2) ? "Left" : "";
 
