@@ -41,7 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractMemoryMapper.cs" />
+    <Compile Include="AbstractStats.cs" />
     <Compile Include="IMemoryMapper.cs" />
+    <Compile Include="IStats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SMBMemoryMapper.cs" />
   </ItemGroup>
