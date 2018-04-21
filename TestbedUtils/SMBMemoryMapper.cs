@@ -65,6 +65,7 @@ namespace TestbedUtils
         private void UpdateInputs()
         {
             UpdatePlayerStats();
+            UpdateGameStats();
             UpdateEnemies();
 
             int i = 0, e = 0;
