@@ -14,23 +14,29 @@ namespace TestbedUtils
         {
         }
 
+        // --- Getters
+
         public override int[] FetchInputs()
         {
+            UpdatePlayerStats();
+            UpdateGameStats();
             UpdateInputs();
             return inputs;
         }
 
-        public override Dictionary<string, int> FetchPlayerStats()
+        public override IStats FetchPlayerStats()
         {
             UpdatePlayerStats();
-            return playerStats.GetStats();
+            return playerStats;
         }
 
-        public override Dictionary<string, int> FetchGameStats()
+        public override IStats FetchGameStats()
         {
             UpdateGameStats();
-            return gameStats.GetStats();
+            return gameStats;
         }
+
+        // --- Updaters
 
         private void UpdatePlayerStats()
         {
@@ -54,7 +60,6 @@ namespace TestbedUtils
             gameStats.Coins = AddressRead(0x075E);
             gameStats.World = AddressRead(0x075F) + 1;
             gameStats.Level = AddressRead(0x0760) + 1;
-
             gameStats.PowerUpVisible = AddressRead(0x001B);
             gameStats.PowerUpX1 = AddressRead(0x04C4);
             gameStats.PowerUpX2 = AddressRead(0x04C6);
@@ -64,10 +69,22 @@ namespace TestbedUtils
 
         private void UpdateInputs()
         {
-            UpdatePlayerStats();
-            UpdateGameStats();
-            UpdateEnemies();
+            // Update Enemies
+            for (uint ie = 0; ie < 5; ie++)
+            {
+                if ((Convert.ToBoolean(AddressRead(0xF + ie))))
+                {
+                    enemy[ie, 0] = (AddressRead(0x6E + ie) * 0x100 + AddressRead(0x87 + ie));
+                    enemy[ie, 1] = (AddressRead(0xCF + ie) + 12);
+                }
+                else
+                {
+                    enemy[ie, 0] = 0;
+                    enemy[ie, 1] = 0;
+                }
+            }
 
+            // Update Inputs
             int i = 0, e = 0;
             for (int dy = -boxRadius * 16; dy <= boxRadius * 16; dy += 16)
             {
@@ -102,22 +119,7 @@ namespace TestbedUtils
             }
         }
 
-        private void UpdateEnemies()
-        {
-            for (uint i = 0; i < 5; i++)
-            {
-                if ((Convert.ToBoolean(AddressRead(0xF + i))))
-                {
-                    enemy[i, 0] = (AddressRead(0x6E + i) * 0x100 + AddressRead(0x87 + i));
-                    enemy[i, 1] = (AddressRead(0xCF + i) + 12);
-                }
-                else
-                {
-                    enemy[i, 0] = 0;
-                    enemy[i, 1] = 0;
-                }
-            }
-        }
+        // --- Helpers
 
         private int GetTile(int dx, int dy)
         {
@@ -159,14 +161,9 @@ namespace TestbedUtils
             return -2;
         }
 
-        private abstract class AbstractStats
-        {
-            protected Dictionary<String, int> keyValuePairs;
+        // --- Statistics
 
-            public abstract Dictionary<String, int> GetStats();
-        }
-
-        private class PlayerStats : AbstractStats
+        public class PlayerStats : AbstractStats
         {
             public int PlayerX { get; set; } = 0;
             public int PlayerY { get; set; } = 0;
@@ -189,7 +186,7 @@ namespace TestbedUtils
             }
         }
 
-        private class GameStats : AbstractStats
+        public class GameStats : AbstractStats
         {
             public int Score { get; set; } = 0;
             public int Lives { get; set; } = 0;
@@ -197,7 +194,6 @@ namespace TestbedUtils
             public int World { get; set; } = 0;
             public int Level { get; set; } = 0;
             public int Time { get; set; } = 0;
-
             public int PowerUpVisible { get; set; } = 0;
             public int PowerUpX1 { get; set; } = 0;            
             public int PowerUpX2 { get; set; } = 0;

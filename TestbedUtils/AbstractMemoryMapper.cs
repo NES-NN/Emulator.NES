@@ -17,9 +17,9 @@ namespace TestbedUtils
             this.emulator = emulator;
         }
 
-        public abstract Dictionary<string, int> FetchGameStats();
         public abstract int[] FetchInputs();
-        public abstract Dictionary<string, int> FetchPlayerStats();
+        public abstract IStats FetchGameStats();
+        public abstract IStats FetchPlayerStats();
 
         protected int AddressRead(uint address)
         {

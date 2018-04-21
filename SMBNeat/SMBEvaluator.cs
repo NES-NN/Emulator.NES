@@ -55,7 +55,7 @@ namespace SMBNeat
             int X = 0, S = 0, T = 400;
 
             // The amount of seconds that can pass with Mario not making progress in Seconds
-            int idelTime = 3;
+            int idleTime = 3;
 
             //How many frames the NN should wait before making another move (Game runs at 60 frames/second)
             int playerSpeed = 30;
@@ -73,15 +73,15 @@ namespace SMBNeat
             SMBNeatPlayer neatPlayer = new SMBNeatPlayer(box, ref emu.Controller);
 
             // Until Mario becomes stuck or dies feed each input frame into the neural network and make a move!
-            int levelX = mapper.FetchPlayerStats()["x"];
+            int levelX = GetPlayerStats(mapper).PlayerX;
 
             //Console.WriteLine("levelX : " + SMBNeatInstance.SMB.PlayerStats["x"]);
             double fitness = 0;
 
             //adjust idleTime into relevent frame count.
-            idelTime = idelTime * (60 / playerSpeed);
+            idleTime = idleTime * (60 / playerSpeed);
             
-            while (mapper.FetchGameStats()["lives"] >= 2 && idelTime >= 0)
+            while (GetGameStats(mapper).Lives >= 2 && idleTime >= 0)
             {
                 for (int i = 1; i <= 60; i++)
                 {
@@ -94,16 +94,16 @@ namespace SMBNeat
                         neatPlayer.MakeMove(mapper.FetchInputs());
 
                         // Check whether Mario is advancing
-                        if (levelX >= mapper.FetchPlayerStats()["x"])
-                            idelTime--;
+                        if (levelX >= GetPlayerStats(mapper).PlayerX)
+                            idleTime--;
 
                         //Update marios X progress
-                        levelX  = mapper.FetchPlayerStats()["x"];
+                        levelX  = GetPlayerStats(mapper).PlayerX;
 
                         //Update fitness eval vars
-                        X = Math.Max(X, mapper.FetchPlayerStats()["x"]);
-                        S = Math.Max(S, mapper.FetchGameStats()["score"]);
-                        T = Math.Min(T, mapper.FetchGameStats()["time"]);
+                        X = Math.Max(X, GetPlayerStats(mapper).PlayerX);
+                        S = Math.Max(S, GetGameStats(mapper).Score);
+                        T = Math.Min(T, GetGameStats(mapper).Time);
 
                         //Console.Write(levelX + ", ");
                     }
@@ -128,6 +128,18 @@ namespace SMBNeat
         {
             //Add game score and x progress then devide by time to get fitness. the +1 is to avoid a devide by zero exception.
             return (double)(X + S) / (double)(T + 1);
+        }
+
+        private SMBMemoryMapper.GameStats GetGameStats(SMBMemoryMapper mapper)
+        {
+            SMBMemoryMapper.GameStats gameStats = (SMBMemoryMapper.GameStats)mapper.FetchGameStats();
+            return gameStats;
+        }
+
+        private SMBMemoryMapper.PlayerStats GetPlayerStats(SMBMemoryMapper mapper)
+        {
+            SMBMemoryMapper.PlayerStats playerStats = (SMBMemoryMapper.PlayerStats)mapper.FetchPlayerStats();
+            return playerStats;
         }
 
         /// <summary>

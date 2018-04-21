@@ -6,7 +6,7 @@ namespace TestbedUtils
     public interface IMemoryMapper
     {
         int[] FetchInputs();
-        Dictionary<String, int> FetchGameStats();
-        Dictionary<String, int> FetchPlayerStats();
+        IStats FetchGameStats();
+        IStats FetchPlayerStats();
     }
 }
