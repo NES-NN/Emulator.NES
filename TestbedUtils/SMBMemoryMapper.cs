@@ -56,11 +56,10 @@ namespace TestbedUtils
             gameStats.Level = AddressRead(0x0760) + 1;
 
             gameStats.PowerUpVisible = AddressRead(0x001B);
-            gameStats.PowerUPX1 = AddressRead(0x04C4);
-            gameStats.PowerUPX2 = AddressRead(0x04C6);
-            gameStats.PowerUPY1 = AddressRead(0x04C5);
-            gameStats.PowerUPY2 = AddressRead(0x04C7);
-
+            gameStats.PowerUpX1 = AddressRead(0x04C4);
+            gameStats.PowerUpX2 = AddressRead(0x04C6);
+            gameStats.PowerUpY1 = AddressRead(0x04C5);
+            gameStats.PowerUpY2 = AddressRead(0x04C7);
         }
 
         private void UpdateInputs()
@@ -149,9 +148,9 @@ namespace TestbedUtils
 
         private int GetPowerUp(int dx, int dy)
         {            
-            if ((gameStats.PowerUPX1 - playerStats.ScreenX < dx) && (gameStats.PowerUPX2 - playerStats.ScreenX > dx))            
+            if ((gameStats.PowerUpX1 - playerStats.ScreenX < dx) && (gameStats.PowerUpX2 - playerStats.ScreenX > dx))            
             {
-                if ((gameStats.PowerUPY1 - playerStats.ScreenY < dy + 24) && (gameStats.PowerUPY2 - playerStats.ScreenY > dy + 24))
+                if ((gameStats.PowerUpY1 - playerStats.ScreenY < dy + 24) && (gameStats.PowerUpY2 - playerStats.ScreenY > dy + 24))
                 {
                     return 2;
                 }
@@ -199,10 +198,10 @@ namespace TestbedUtils
             public int Time { get; set; } = 0;
 
             public int PowerUpVisible { get; set; } = 0;
-            public int PowerUPX1 { get; set; } = 0;            
-            public int PowerUPX2 { get; set; } = 0;
-            public int PowerUPY1 { get; set; } = 0;
-            public int PowerUPY2 { get; set; } = 0;
+            public int PowerUpX1 { get; set; } = 0;            
+            public int PowerUpX2 { get; set; } = 0;
+            public int PowerUpY1 { get; set; } = 0;
+            public int PowerUpY2 { get; set; } = 0;
 
             public override Dictionary<String, int> GetStats()
             {
@@ -210,8 +209,9 @@ namespace TestbedUtils
                 {
                     { "score", Score }, { "lives", Lives }, { "coins", Coins },
                     { "world", World }, { "level", Level }, { "time", Time },
-                    {"PowerUpVisible", PowerUpVisible }, {"PowerUPX1",PowerUPX1},
-                    {"PowerUPX2",PowerUPX2 },{"PowerUPY1",PowerUPY1 },{"PowerUPY2",PowerUPY2 }
+                    { "powerUpVisible", PowerUpVisible },
+                    { "powerUpX1", PowerUpX1}, { "powerUpX2", PowerUpX2 },
+                    { "powerUpY1", PowerUpY1 }, {"powerUpY2", PowerUpY2 }
                 };
                 return keyValuePairs;
             }
