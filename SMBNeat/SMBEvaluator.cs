@@ -51,74 +51,74 @@ namespace SMBNeat
         /// </summary>
         public FitnessInfo Evaluate(IBlackBox box)
         {
-            //Hold max values for fitness eval.
-            int X = 0, S = 0, T = 400;
+            // How many frames the NN should wait before making another move (Game runs at 60 frames/second)
+            int playerSpeed = 2;
 
             // The amount of seconds that can pass with Mario not making progress in Seconds
             int idleTime = 3;
+            idleTime = idleTime * (60 / playerSpeed);
 
-            //How many frames the NN should wait before making another move (Game runs at 60 frames/second)
-            int playerSpeed = 30;
-
-            //Create a fresh clone of the state
+            // Create a fresh clone of the state
             Emulator emu = LoadState(_stateFile);
 
-            //Create a new controller for the Emulator
-            emu.Controller = new NES001Controller(); ;
+            // Create a new controller for the Emulator
+            emu.Controller = new NES001Controller();
 
-            //Create a new SMB Mapper object for easy access to the NN inputs.
+            // Create a new SMB Mapper object for easy access to the NN inputs.
             SMBMemoryMapper mapper = new SMBMemoryMapper(ref emu);
 
-            //Create a new Neat Player
+            // Create a new Neat Player
             SMBNeatPlayer neatPlayer = new SMBNeatPlayer(box, ref emu.Controller);
 
             // Until Mario becomes stuck or dies feed each input frame into the neural network and make a move!
             int levelX = GetPlayerStats(mapper).PlayerX;
 
-            //Console.WriteLine("levelX : " + SMBNeatInstance.SMB.PlayerStats["x"]);
-            double fitness = 0;
-
-            //adjust idleTime into relevent frame count.
-            idleTime = idleTime * (60 / playerSpeed);
-            
             while (GetGameStats(mapper).Lives >= 2 && idleTime >= 0)
             {
                 for (int i = 1; i <= 60; i++)
                 {
-                    //process 1 frame of the game
+                    // Process 1 frame of the game
                     emu.PPU.ProcessFrame();
 
                     if (i % playerSpeed == 0)
                     {
-                        //Evaluate inputs and make a moves
+                        // Refresh the memory mapper
+                        mapper.Refresh();
+                        int currLevelX = GetPlayerStats(mapper).PlayerX;
+
+                        // Evaluate inputs and make a moves
                         neatPlayer.MakeMove(mapper.FetchInputs());
 
                         // Check whether Mario is advancing
-                        if (levelX >= GetPlayerStats(mapper).PlayerX)
+                        if (levelX >= currLevelX)
+                        {
                             idleTime--;
+                        }
 
-                        //Update marios X progress
-                        levelX  = GetPlayerStats(mapper).PlayerX;
+                        // Update marios X progress
+                        levelX = currLevelX;
 
-                        //Update fitness eval vars
-                        X = Math.Max(X, GetPlayerStats(mapper).PlayerX);
-                        S = Math.Max(S, GetGameStats(mapper).Score);
-                        T = Math.Min(T, GetGameStats(mapper).Time);
-
-                        //Console.Write(levelX + ", ");
+                        //Console.WriteLine("levelX: " + levelX);
                     }
                 }
+
+                // Refresh the memory mapper before evalutating while loop
+                mapper.Refresh();
             }
+
+            // Assign fitness eval vars
+            int X = GetPlayerStats(mapper).PlayerX;
+            int S = GetGameStats(mapper).Score;
+            int T = GetGameStats(mapper).Time;
+            double fitness = 0;
 
             // Update eval count ?? what is this even doing? 
             _evalCount++;
 
-            //get the fitness score of the run
+            // Get the fitness score of the run
             fitness = CalculateFinalFitness(X, S, T);
 
-            mapper = null;
-
-            //Console.Write("fitness : " + fitness + "\n");
+            Console.WriteLine("X: " + X + "\t S: " + S + "\t T: " + T + "\t fitness: " + fitness);
             
             // Return the fitness score
             return new FitnessInfo(fitness, fitness);
@@ -126,7 +126,7 @@ namespace SMBNeat
 
         private double CalculateFinalFitness(int X, int S, int T)
         {
-            //Add game score and x progress then devide by time to get fitness. the +1 is to avoid a devide by zero exception.
+            // Add game score and x progress then divide by time to get fitness. the +1 is to avoid a devide by zero exception.
             return (double)(X + S) / (double)(T + 1);
         }
 

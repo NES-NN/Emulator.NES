@@ -12,28 +12,31 @@ namespace TestbedUtils
 
         public SMBMemoryMapper(ref Emulator emulator) : base(ref emulator)
         {
+            Refresh();
         }
 
         // --- Getters
 
         public override int[] FetchInputs()
         {
-            UpdatePlayerStats();
-            UpdateGameStats();
-            UpdateInputs();
             return inputs;
         }
 
         public override IStats FetchPlayerStats()
         {
-            UpdatePlayerStats();
             return playerStats;
         }
 
         public override IStats FetchGameStats()
         {
-            UpdateGameStats();
             return gameStats;
+        }
+
+        public override void Refresh()
+        {
+            UpdatePlayerStats();
+            UpdateGameStats();
+            UpdateInputs();
         }
 
         // --- Updaters

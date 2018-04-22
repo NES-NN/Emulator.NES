@@ -20,6 +20,7 @@ namespace TestbedUtils
         public abstract int[] FetchInputs();
         public abstract IStats FetchGameStats();
         public abstract IStats FetchPlayerStats();
+        public abstract void Refresh();
 
         protected int AddressRead(uint address)
         {

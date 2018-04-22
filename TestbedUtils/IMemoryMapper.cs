@@ -8,5 +8,6 @@ namespace TestbedUtils
         int[] FetchInputs();
         IStats FetchGameStats();
         IStats FetchPlayerStats();
+        void Refresh();
     }
 }
