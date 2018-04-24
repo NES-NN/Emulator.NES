@@ -310,6 +310,7 @@ __pycache__/
 
 # Shared objects (inc. Windows DLLs)
 *.dll
+!SharpNeatDomains.dll
 *.so
 *.so.*
 *.dylib
