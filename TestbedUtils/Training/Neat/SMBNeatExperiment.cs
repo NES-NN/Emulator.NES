@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpNeat.Domains;
-using SharpNeat.Phenomes;
+﻿using SharpNeat.Phenomes;
 using SharpNeat.Core;
 
-using dotNES;
-
-namespace SMBNeat
+namespace TestbedUtils.Training.Neat
 {
-    class SMBExperiment : SimpleNeatExperiment
+    public class SMBNeatExperiment : AbstractNeatExperiment
     {
-        private string _state;
+        private string state;
+        private AbstractNetworkTrainer.UpdateMemoryMapperRef handler;
 
-        public SMBExperiment(string state)
+        public SMBNeatExperiment(string state, AbstractNetworkTrainer.UpdateMemoryMapperRef handler)
         {
-            _state = state;
+            this.state = state;
+            this.handler = handler;
         }
 
         /// <summary>
@@ -25,7 +19,7 @@ namespace SMBNeat
         /// </summary>
         public override IPhenomeEvaluator<IBlackBox> PhenomeEvaluator
         {
-            get { return new SMBEvaluator(_state); }
+            get { return new SMBEvaluator(state, handler); }
         }
 
         /// <summary>

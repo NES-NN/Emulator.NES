@@ -1,21 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System.Xml;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using SharpNeat.Domains;
 using SharpNeat.EvolutionAlgorithms;
 using SharpNeat.Genomes.Neat;
 using SharpNeat.Decoders;
-using System.Threading.Tasks;
 using SharpNeat.Core;
 using SharpNeat.EvolutionAlgorithms.ComplexityRegulation;
 using SharpNeat.Decoders.Neat;
 using SharpNeat.Phenomes;
 using SharpNeat.DistanceMetrics;
 using SharpNeat.SpeciationStrategies;
-using System.Xml;
-using dotNES;
 
-namespace SMBNeat
+namespace TestbedUtils.Training.Neat
 {
-    abstract class SimpleNeatExperiment : INeatExperiment
+    public abstract class AbstractNeatExperiment : INeatExperiment
     {
         NeatEvolutionAlgorithmParameters _eaParams;
         NeatGenomeParameters _neatGenomeParams;
@@ -99,7 +98,7 @@ namespace SMBNeat
         public List<NeatGenome> LoadPopulation(XmlReader xr)
         {
             NeatGenomeFactory genomeFactory = (NeatGenomeFactory)CreateGenomeFactory();
-            return NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false, genomeFactory);            
+            return NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false, genomeFactory);
         }
 
         /// <summary>
@@ -193,6 +192,22 @@ namespace SMBNeat
         public IGenomeDecoder<NeatGenome, IBlackBox> CreateGenomeDecoder()
         {
             return new NeatGenomeDecoder(_activationScheme);
+        }
+
+        /// <summary>
+        /// Queries the Parallel Options to figure out the degree of parallelism
+        /// </summary>
+        /// <returns>the parallelism degree</returns>
+        public int GetMaxDegreeOfParallelism()
+        {
+            if (_parallelOptions == null)
+            {
+                return 1;
+            }
+            else
+            {
+                return _parallelOptions.MaxDegreeOfParallelism;
+            }
         }
 
         #endregion
