@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using dotNES;
 
-namespace TestbedUtils
+namespace TestbedUtils.Memory
 {
     public class SMBMemoryMapper : AbstractMemoryMapper
     {

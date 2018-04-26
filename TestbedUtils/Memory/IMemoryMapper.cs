@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TestbedUtils
+namespace TestbedUtils.Memory
 {
     public interface IMemoryMapper
     {
